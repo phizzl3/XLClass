@@ -1,4 +1,4 @@
-# 01.19.2021
+# 01.20.2021
 """
 Class for working with *.xlsx files using the Openpyxl module. 
 ...Mainly for my job...
@@ -499,3 +499,20 @@ class Xlsx:
             input("[ENTER] to continue...")
 
         return self
+
+    def save(self, savepath) -> None:
+        """
+        Duplicates openpyxl's save function so it can be called on the object 
+        without needing the .wb attribute. Saves the Excel file to the specified 
+        filepath or Path location. ex: 'C:\files\MyFile.xlxs'
+
+        Args:
+            savepath (str or pathlib.Path): Output file location (including filename) 
+                     for your output file.
+        """ 
+        try:
+            self.wb.save(savepath)
+
+        except Exception as e:
+            print(f"\nError - save: {e}")
+            input("[ENTER] to continue...")
