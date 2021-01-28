@@ -539,10 +539,9 @@ class Xlsx:
                 if row >= datastartrow:
                     data[cell.value] = {
                         self.ws[f'{each.upper()}{hdrrow}'].value: self.ws[f'{each.upper()}{row}'].value for each in datacols}
-    
+
             return data
-            
+
         except Exception as e:
             print(f"\nError - generate_dictionary: {e}")
             input("[ENTER] to continue...")
-
