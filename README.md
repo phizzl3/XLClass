@@ -242,7 +242,7 @@ ex: 'C:\files\MyFile.xlxs'
         savepath (str or pathlib.Path): Output file location (including filename) 
                     for your output file.
 
-### generate_dictionary(keycol, *datacols, hdrrow=1, datastartrow=2)
+### generate_dictionary(keycol, datacols, hdrrow=1, datastartrow=2)
 
 Read the headers and cells from the spreadsheet and use them to generate
 a dictionary of the data. Data listed in *keycol* on spreadsheet will need to be a series of unique values to be used as keys or the information assigned will be overwritten each time a duplicate key is found. 
@@ -250,8 +250,7 @@ a dictionary of the data. Data listed in *keycol* on spreadsheet will need to be
     Args:
         keycol (str): Column letter where the data that will be used as the dictionary 
                 keys is located.
-        datacols (list): *Expanded list of string column letters where needed data 
-                 is located.
+        datacols (list): List of string column letters where needed data is located.
         hdrrow (int, optional) Row number containing the headers in the spreadsheet. 
                 Defaults to 1.
         datastartrow (int, optional) Row number where the needed data starts. 
