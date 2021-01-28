@@ -518,7 +518,7 @@ class Xlsx:
             print(f"\nError - save: {e}")
             input("[ENTER] to continue...")
 
-    def generate_dictionary(self, keycol, *datacols, hdrrow=1, datastartrow=2) -> dict:
+    def generate_dictionary(self, keycol, datacols, hdrrow=1, datastartrow=2) -> dict:
         """
         Read the headers and cells from the spreadsheet and use them to generate
         a dictionary of the data. Data listed in *keycol* on spreadsheet will need to be 
@@ -527,7 +527,7 @@ class Xlsx:
 
         Args:
             keycol (str): Column letter where the data that will be used as the dictionary keys is located.
-            datacols (list): *Expanded list of string column letters where needed data is located.
+            datacols (list): List of string column letters where needed data is located.
             hdrrow (int, optional) Row number containing the headers in the spreadsheet. Defaults to 1.
             datastartrow (int, optional) Row number where the needed data starts. Defaults to 2.
 
