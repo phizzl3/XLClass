@@ -1,7 +1,6 @@
 # 01.27.2021
 """
 Class for working with *.xlsx files using the Openpyxl module. 
-...Mainly for my job...
 """
 
 
@@ -535,9 +534,15 @@ class Xlsx:
             dict: Dictionary generated from the data in the spreadsheet.
         """
         data = {}
-        for row, cell in enumerate(self.ws[keycol.upper()], 1):
-            if row >= datastartrow:
-                data[cell.value] = {
-                    self.ws[f'{each.upper()}{hdrrow}'].value: self.ws[f'{each.upper()}{row}'].value for each in datacols}
+        try:
+            for row, cell in enumerate(self.ws[keycol.upper()], 1):
+                if row >= datastartrow:
+                    data[cell.value] = {
+                        self.ws[f'{each.upper()}{hdrrow}'].value: self.ws[f'{each.upper()}{row}'].value for each in datacols}
+    
+            return data
+            
+        except Exception as e:
+            print(f"\nError - generate_dictionary: {e}")
+            input("[ENTER] to continue...")
 
-        return data
