@@ -1,7 +1,6 @@
-# 01.20.2021
+# 01.27.2021
 """
 Class for working with *.xlsx files using the Openpyxl module. 
-...Mainly for my job...
 """
 
 
@@ -133,7 +132,8 @@ class Xlsx:
             sortme = []
             for row, rowdata in enumerate(self.ws.iter_rows(values_only=True), 1):
                 if row >= startrow:
-                    sortme.append([str(self.ws[f'{sortcol.upper()}{row}'].value).lower(), ])
+                    sortme.append(
+                        [str(self.ws[f'{sortcol.upper()}{row}'].value).lower(), ])
                     sortme[row-startrow].append(rowdata)
 
             self.ws.delete_rows(startrow, self.ws.max_row)
@@ -509,10 +509,39 @@ class Xlsx:
         Args:
             savepath (str or pathlib.Path): Output file location (including filename) 
                      for your output file.
-        """ 
+        """
         try:
             self.wb.save(savepath)
 
         except Exception as e:
             print(f"\nError - save: {e}")
+            input("[ENTER] to continue...")
+
+    def generate_dictionary(self, keycol, datacols, hdrrow=1, datastartrow=2) -> dict:
+        """
+        Read the headers and cells from the spreadsheet and use them to generate
+        a dictionary of the data. Data listed in *keycol* on spreadsheet will need to be 
+        a series of unique values to be used as keys or the information assigned will be 
+        overwritten each time a duplicate key is found.
+
+        Args:
+            keycol (str): Column letter where the data that will be used as the dictionary keys is located.
+            datacols (list): List of string column letters where needed data is located.
+            hdrrow (int, optional) Row number containing the headers in the spreadsheet. Defaults to 1.
+            datastartrow (int, optional) Row number where the needed data starts. Defaults to 2.
+
+        Returns:
+            dict: Dictionary generated from the data in the spreadsheet.
+        """
+        data = {}
+        try:
+            for row, cell in enumerate(self.ws[keycol.upper()], 1):
+                if row >= datastartrow:
+                    data[cell.value] = {
+                        self.ws[f'{each.upper()}{hdrrow}'].value: self.ws[f'{each.upper()}{row}'].value for each in datacols}
+
+            return data
+
+        except Exception as e:
+            print(f"\nError - generate_dictionary: {e}")
             input("[ENTER] to continue...")
