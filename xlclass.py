@@ -68,7 +68,7 @@ class Xlsx:
             self.wb = openpyxl.Workbook()
             self.ws = self.wb.active
 
-    def copy_sheet_data(self, other, columns):
+    def copy_sheet_data(self, other, columns) -> object:
         """
         Copy cell values from source Excel Worksheet to target Excel Worksheet 
         using a passed dictionary of column letters.
@@ -92,7 +92,7 @@ class Xlsx:
 
         return self
 
-    def copy_csv_data(self, incsv):
+    def copy_csv_data(self, incsv) -> object:
         """
         Copy all values from csv file to target Excel Worksheet.
 
@@ -113,7 +113,7 @@ class Xlsx:
 
         return self
 
-    def sort_and_replace(self, sortcol, startrow=1):
+    def sort_and_replace(self, sortcol, startrow=1) -> object:
         """
         Sort and replace cell values based on values of a specific column. 
         Use this BEFORE any cell formatting, etc as it DELETES the values and then 
@@ -147,7 +147,7 @@ class Xlsx:
 
         return self
 
-    def name_headers(self, headers, hdrrow=1, bold=False):
+    def name_headers(self, headers, hdrrow=1, bold=False) -> object:
         """
         Cycle through header row and fill cells with values.
 
@@ -173,7 +173,7 @@ class Xlsx:
 
         return self
 
-    def get_matching_value(self, srchcol, srchval, retcol, startrow=1):
+    def get_matching_value(self, srchcol, srchval, retcol, startrow=1) -> object:
         """
         Search column for a value and return the corresponding value 
         from another column in the same row.
@@ -202,7 +202,7 @@ class Xlsx:
 
         return False
 
-    def set_matching_value(self, srchcol, srchval, trgtcol, setval, startrow=1):
+    def set_matching_value(self, srchcol, srchval, trgtcol, setval, startrow=1) -> object:
         """
         Search column for a value and set a corresponding value in another 
         column in the same row. 
@@ -230,7 +230,7 @@ class Xlsx:
 
         return self
 
-    def find_remove_row(self, col, srch, startrow=1):
+    def find_remove_row(self, col, srch, startrow=1) -> object:
         """
         Remove row based on a specific value found in a column.
 
@@ -260,7 +260,7 @@ class Xlsx:
 
         return self
 
-    def find_replace(self, col, fndrplc, skip=None, startrow=1):
+    def find_replace(self, col, fndrplc, skip=None, startrow=1) -> object:
         """
         Search column for a string value and replace it the value is 
         not listed in 'skip'.
@@ -294,7 +294,7 @@ class Xlsx:
 
         return self
 
-    def move_values(self, scol, tcol, vals, startrow=1):
+    def move_values(self, scol, tcol, vals, startrow=1) -> object:
         """
         Search source column for passed list of values and 
         move them to target column. 
@@ -325,7 +325,7 @@ class Xlsx:
 
         return self
 
-    def verify_length(self, col, length, fillcolor, skip=None, startrow=1):
+    def verify_length(self, col, length, fillcolor, skip=None, startrow=1) -> object:
         """
         Cycle through values in a column to verify their length marking 
         cells of an incorrect length with a background fill color. 
@@ -361,7 +361,7 @@ class Xlsx:
 
         return self
 
-    def highlight_rows(self, col, srch, fillcolor, startrow=1):
+    def highlight_rows(self, col, srch, fillcolor, startrow=1) -> object:
         """
         Search row for specified str value and fill entire row 
         with specified background fill color when found. 
@@ -392,7 +392,7 @@ class Xlsx:
 
         return self
 
-    def number_type_fix(self, col, numtype, startrow=1):
+    def number_type_fix(self, col, numtype, startrow=1) -> object:
         """
         Quick fix for cells that contain numbers formatted as 
         text/str data. Cycle through cells replacing str formatted 
@@ -422,7 +422,7 @@ class Xlsx:
 
         return self
 
-    def format_date(self, col, startrow=1):
+    def format_date(self, col, startrow=1) -> object:
         """
         Format str date value to (MM/DD/YYYY).
 
@@ -446,7 +446,7 @@ class Xlsx:
 
         return self
 
-    def format_currency(self, col, startrow=1):
+    def format_currency(self, col, startrow=1) -> object:
         """
         Format str currency value to ($0,000.00).
 
@@ -469,7 +469,7 @@ class Xlsx:
 
         return self
 
-    def set_cell_size(self, pairs):
+    def set_cell_size(self, pairs) -> object:
         """
         Selects rows and columns and adjusts their sizes using a dictionary 
         of pairs of rows or columns along with corresponding height or width 
