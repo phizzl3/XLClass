@@ -1,4 +1,4 @@
-# 01.27.2021
+# 02.11.2021
 """
 Class for working with *.xlsx files using the Openpyxl module. 
 """
@@ -35,6 +35,7 @@ class Xlsx:
         as a string to 'sheetname' or you can select needed sheet from a menu.
 
         Attrs:
+            *.path (str/pathlib.Path, optional): Filepath information.
             *.wb (openpyxl.Workbook): Workbook object for Excel file.
             *.ws (openpyxl.Workbook.worksheet): Active sheet for Excel file. 
 
@@ -45,6 +46,7 @@ class Xlsx:
                     work with. ex: 'Invoice'
         """
         if filepath:
+            self.path = filepath
             self.wb = openpyxl.load_workbook(filepath)
             if len(self.wb.sheetnames) == 1:
                 self.ws = self.wb.active
@@ -65,6 +67,7 @@ class Xlsx:
                             print('\n Try again...')
 
         else:
+            self.path = None
             self.wb = openpyxl.Workbook()
             self.ws = self.wb.active
 
@@ -536,7 +539,7 @@ class Xlsx:
         data = {}
         try:
             for row, cell in enumerate(self.ws[keycol.upper()], 1):
-                if row >= datastartrow:
+                if row >= datastartrow and cell.value:
                     data[cell.value] = {
                         self.ws[f'{each.upper()}{hdrrow}'].value: self.ws[f'{each.upper()}{row}'].value for each in datacols}
 

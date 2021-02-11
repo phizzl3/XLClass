@@ -23,6 +23,7 @@ Excel file, the name of the sheet you want to work with can be passed
 as a string to 'sheetname' or you can select needed sheet from a menu.
 
     Attrs:
+        *.path (str/pathlib.Path, optional): Filepath information.
         *.wb (openpyxl.Workbook): Workbook object for Excel file.
         *.ws (openpyxl.Workbook.worksheet): Active sheet for Excel file. 
 
