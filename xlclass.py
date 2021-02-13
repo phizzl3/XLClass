@@ -5,6 +5,7 @@ Class for working with *.xlsx files using the Openpyxl module.
 
 
 import csv
+import datetime
 
 import openpyxl
 from openpyxl.styles import Font, PatternFill
@@ -548,3 +549,11 @@ class Xlsx:
         except Exception as e:
             print(f"\nError - generate_dictionary: {e}")
             input("[ENTER] to continue...")
+
+    def generate_list(self, startrow=1, stoprow=None) -> list:
+
+        row_data = []
+        for row in self.ws.iter_rows(min_row=startrow, max_row=stoprow):
+            row_data.append([cell.value for cell in row])
+
+        return row_data
