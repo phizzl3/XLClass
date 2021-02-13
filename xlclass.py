@@ -551,7 +551,18 @@ class Xlsx:
             input("[ENTER] to continue...")
 
     def generate_list(self, startrow=1, stoprow=None) -> list:
+        """
+        Generates a list of lists containing all cell values from startrow to stoprow (inclusive).
+        (Use _list.pop(0) on returned list to get a separate headers list if present/needed.)
 
+        Args:
+            startrow (int, optional): First row to pull data from to generate the list. Defaults to 1.
+            stoprow (int, optional): Last row to pull data from to generate the list. 
+                    If no value is passed, it will pull data from all rows after startrow. Defaults to None.
+
+        Returns:
+            list: List of lists containing the values read from the cells.
+        """
         row_data = []
         for row in self.ws.iter_rows(min_row=startrow, max_row=stoprow):
             row_data.append([cell.value for cell in row])
