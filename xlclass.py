@@ -1,4 +1,4 @@
-# 02.11.2021
+# 02.13.2021
 """
 Class for working with *.xlsx files using the Openpyxl module. 
 """
