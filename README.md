@@ -259,3 +259,16 @@ a dictionary of the data. Data listed in *keycol* on spreadsheet will need to be
 
     Returns:
         dict: Dictionary generated from the data in the spreadsheet.  
+
+### generate_list(startrow=1, stoprow=None)
+
+Generates a list of lists containing all cell values from startrow to stoprow (inclusive).
+(Use _list.pop(0) on returned list to get a separate headers list if present/needed.)
+
+    Args:
+        startrow (int, optional): First row to pull data from to generate the list. Defaults to 1.
+        stoprow (int, optional): Last row to pull data from to generate the list. 
+                If no value is passed, it will pull data from all rows after startrow. Defaults to None.
+
+    Returns:
+        list: List of lists containing the values read from the cells.
