@@ -504,18 +504,24 @@ class Xlsx:
 
         return self
 
-    def save(self, savepath) -> None:
+    def save(self, savepath=None) -> None:
         """
         Duplicates openpyxl's save function so it can be called on the object 
-        without needing the .wb attribute. Saves the Excel file to the specified 
-        filepath or Path location. ex: 'C:\files\MyFile.xlxs'
+        without needing the .wb attribute, etc. Saves the Excel file to the specified 
+        filepath or Path location if passed. If no filepath is passed, uses the 
+        original file's Path (.path attr) to save over the original.
 
         Args:
-            savepath (str or pathlib.Path): Output file location (including filename) 
-                     for your output file.
+            savepath (str or pathlib.Path, optional): Output file location (including filename) 
+                     for your output file. Uses original if not specified. Defaults to None.
         """
         try:
-            self.wb.save(savepath)
+            if savepath:
+                self.wb.save(savepath)
+            elif self.path:
+                self.wb.save(self.path)
+            else:
+                input("\n No savepath found...")
 
         except Exception as e:
             print(f"\nError - save: {e}")

@@ -234,14 +234,12 @@ Selects rows and columns and adjusts their sizes using a dictionary of pairs of 
     Returns:
         self
 
-### save(savepath)
+### save(savepath=None)
 
-Duplicates openpyxl's save function so it can be called on the object without needing the .wb attribute. Saves the Excel file to the specified filepath or Path location.  
-ex: 'C:\files\MyFile.xlxs'
+Duplicates openpyxl's save function so it can be called on the object without needing the .wb attribute, etc. Saves the Excel file to the specified filepath or Path location if passed. If no filepath is passed, uses the original file's Path (.path attr) to save over the original.
 
     Args:
-        savepath (str or pathlib.Path): Output file location (including filename) 
-                    for your output file.
+        savepath (str or pathlib.Path, optional): Output file location (including filename) for your output file. Uses original if not specified. Defaults to None.
 
 ### generate_dictionary(keycol, datacols, hdrrow=1, datastartrow=2)
 
