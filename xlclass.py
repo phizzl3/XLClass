@@ -554,7 +554,7 @@ class Xlsx:
         try:
             for row, cell in enumerate(self.ws[keycolumn.upper()], 1):
                 keys = cell.value if keycol else f"{row:0>4}"
-                if row >= datastart:
+                if row >= datastart and keys:
                     data[keys] = {
                         self.ws[f'{each.upper()}{hdrrow}'].value: self.ws[f'{each.upper()}{row}'].value for each in datacols}
 
