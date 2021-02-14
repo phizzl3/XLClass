@@ -236,27 +236,36 @@ Selects rows and columns and adjusts their sizes using a dictionary of pairs of 
 
 ### save(savepath=None)
 
-Duplicates openpyxl's save function so it can be called on the object without needing the .wb attribute, etc. Saves the Excel file to the specified filepath or Path location if passed. If no filepath is passed, uses the original file's Path (.path attr) to save over the original.
+Duplicates openpyxl's save function so it can be called on the object without  
+needing the .wb attribute, etc. Saves the Excel file to the specified filepath  
+or Path location if passed. If no filepath is passed, uses the original file's  
+Path (.path attr) to save over the original.
 
     Args:
-        savepath (str or pathlib.Path, optional): Output file location (including filename) for your output file. Uses original if not specified. Defaults to None.
+        savepath (str or pathlib.Path, optional): Output file location  
+        (including filename) for your output file. Uses original if not specified.  
+        Defaults to None.
 
-### generate_dictionary(keycol, datacols, hdrrow=1, datastartrow=2)
+### generate_dictionary(datacols, keycol=None, hdrrow=1, datastartrow=None)
 
-Read the headers and cells from the spreadsheet and use them to generate
-a dictionary of the data. Data listed in *keycol* on spreadsheet will need to be a series of unique values to be used as keys or the information assigned will be overwritten each time a duplicate key is found. 
+Reads the headers and cells from the spreadsheet and usees them to generate  
+a dictionary of the data. Data listed in *keycol* on spreadsheet will need to be  
+a series of unique values to be used as keys or the information assigned will be  
+overwritten each time a duplicate key is found. If *keycol* is not specified, a  
+4-digit string of the row number is used for each key. ex: '0005'
 
     Args:
-        keycol (str): Column letter where the data that will be used as the dictionary 
-                keys is located.
         datacols (list): List of string column letters where needed data is located.
-        hdrrow (int, optional) Row number containing the headers in the spreadsheet. 
-                Defaults to 1.
+        keycol (str, optional): Column letter where the data that will be used as the 
+            dictionary keys is located. If not passed, 4-digit string of the row numbers 
+            will be used instead. Defaults to None.
+        hdrrow (int, optional) Row number containing the headers in the spreadsheet.  
+        Defaults to 1.
         datastartrow (int, optional) Row number where the needed data starts. 
-                     Defaults to 2.
+            If not specified, data will be read from header row + 1. Defaults to None.
 
     Returns:
-        dict: Dictionary generated from the data in the spreadsheet.  
+        dict: Dictionary generated from the data in the spreadsheet. {key: {header: value}}
 
 ### generate_list(startrow=1, stoprow=None)
 
@@ -264,9 +273,11 @@ Generates a list of lists containing all cell values from startrow to stoprow (i
 (Use _list.pop(0) on returned list to get a separate headers list if present/needed.)
 
     Args:
-        startrow (int, optional): First row to pull data from to generate the list. Defaults to 1.
-        stoprow (int, optional): Last row to pull data from to generate the list. 
-                If no value is passed, it will pull data from all rows after startrow. Defaults to None.
+        startrow (int, optional): First row to pull data from to generate the list.  
+        Defaults to 1.
+        stoprow (int, optional): Last row to pull data from to generate the list.  
+                If no value is passed, it will pull data from all rows after startrow.  
+                Defaults to None.
 
     Returns:
         list: List of lists containing the values read from the cells.
