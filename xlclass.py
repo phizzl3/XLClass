@@ -527,27 +527,35 @@ class Xlsx:
             print(f"\nError - save: {e}")
             input("[ENTER] to continue...")
 
-    def generate_dictionary(self, keycol, datacols, hdrrow=1, datastartrow=2) -> dict:
+    def generate_dictionary(self, datacols, keycol=None, hdrrow=1, datastartrow=None) -> dict:
         """
-        Read the headers and cells from the spreadsheet and use them to generate
+        Reads the headers and cells from the spreadsheet and usees them to generate
         a dictionary of the data. Data listed in *keycol* on spreadsheet will need to be 
         a series of unique values to be used as keys or the information assigned will be 
-        overwritten each time a duplicate key is found.
+        overwritten each time a duplicate key is found. If *keycol* is not specified, a 
+        4-digit string of the row number is used for each key. ex: '0005'
 
         Args:
-            keycol (str): Column letter where the data that will be used as the dictionary keys is located.
             datacols (list): List of string column letters where needed data is located.
+            keycol (str, optional): Column letter where the data that will be used as the 
+                dictionary keys is located. If not passed, 4-digit string of the row numbers 
+                will be used instead. Defaults to None.
             hdrrow (int, optional) Row number containing the headers in the spreadsheet. Defaults to 1.
-            datastartrow (int, optional) Row number where the needed data starts. Defaults to 2.
+            datastartrow (int, optional) Row number where the needed data starts. 
+                If not specified, data will be read from header row + 1. Defaults to None.
 
         Returns:
-            dict: Dictionary generated from the data in the spreadsheet.
+            dict: Dictionary generated from the data in the spreadsheet. {key: {header: value}}
         """
         data = {}
+        keycolumn = keycol if keycol else 'A'
+        datastart = hdrrow + 1 if not datastartrow else datastartrow
+        
         try:
-            for row, cell in enumerate(self.ws[keycol.upper()], 1):
-                if row >= datastartrow and cell.value:
-                    data[cell.value] = {
+            for row, cell in enumerate(self.ws[keycolumn.upper()], 1):
+                keys = cell.value if keycol else f"{row:0>4}"
+                if row >= datastart:
+                    data[keys] = {
                         self.ws[f'{each.upper()}{hdrrow}'].value: self.ws[f'{each.upper()}{row}'].value for each in datacols}
 
             return data
