@@ -550,13 +550,13 @@ class Xlsx:
         data = {}
         keycolumn = keycol if keycol else 'A'
         datastart = hdrrow + 1 if not datastartrow else datastartrow
-        
+
         try:
             for row, cell in enumerate(self.ws[keycolumn.upper()], 1):
                 keys = cell.value if keycol else f"{row:0>4}"
                 if row >= datastart and keys:
                     data[keys] = {
-                        self.ws[f'{each.upper()}{hdrrow}'].value: self.ws[f'{each.upper()}{row}'].value for each in datacols}
+                        self.ws[f'{ea.upper()}{hdrrow}'].value: self.ws[f'{ea.upper()}{row}'].value for ea in datacols}
 
             return data
 
