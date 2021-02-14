@@ -27,7 +27,7 @@ class Xlsx:
     as attributes for use with the enclosed methods.
     """
 
-    def __init__(self, filepath=None, sheetname=None):
+    def __init__(self, filepath=None, sheetname=None) -> None:
         """
         Initialize main attributes for Xlsx objects if Path points to 
         an existing Excel file. Creates a blank Workbook/Worksheet object 
@@ -42,9 +42,9 @@ class Xlsx:
 
         Args:
             filepath (str/pathlib.Path, optional): str/Path object representing 
-                    *.xlsx input file.
+                *.xlsx input file.
             sheet (str, optional): Name representing which sheet you want to 
-                    work with. ex: 'Invoice'
+                work with. ex: 'Invoice'
         """
         if filepath:
             self.path = filepath
@@ -80,10 +80,10 @@ class Xlsx:
         Args:
             other (Xlsx): Input Xlsx Excel file object to copy values from.
             columns (dict{str: str}): Dictionary of column letters representing the source and 
-                    target column letters to copy the values. ex: {'A': 'C', 'D': 'B'}
+                target column letters to copy the values. ex: {'A': 'C', 'D': 'B'}
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             for row, _cell in enumerate(other.ws['A'], 1):
@@ -104,7 +104,7 @@ class Xlsx:
             incsv (pathlib.Path): Path object representing a csv file. 
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             with open(incsv, 'r') as f:
@@ -125,12 +125,12 @@ class Xlsx:
 
         Args:
             sortcol (str): Column letter containing the values to use as "keys" to 
-                    sort row data by. ex: 'A'
+                sort row data by. ex: 'A'
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             sortme = []
@@ -157,12 +157,12 @@ class Xlsx:
 
         Args:
             headers (dict{str:str}): Str pairs of columns and header name values. 
-                    ex: {'A': 'Name'}
+                ex: {'A': 'Name'}
             hdrrow (int, optional): Row to be used for headers. Defaults to 1.
             bold (bool, optional): Option to bold values in headers. Defaults to False.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             for col, name in headers.items():
@@ -177,7 +177,7 @@ class Xlsx:
 
         return self
 
-    def get_matching_value(self, srchcol, srchval, retcol, startrow=1) -> object:
+    def get_matching_value(self, srchcol, srchval, retcol, startrow=1) -> str:
         """
         Search column for a value and return the corresponding value 
         from another column in the same row.
@@ -186,13 +186,13 @@ class Xlsx:
             srchcol (str): Column letter to search for a value. ex: 'A'
             srchval (str): Value to search column for. ex: 'Total'
             retcol (str): Column letter containing the corresponding value 
-                   to be returned. ex: 'B'
+                to be returned. ex: 'B'
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
             str: Value from corresponding cell in the same row as search value. 
-                 Returns False if value search value is not found. 
+                Returns False if value search value is not found. 
         """
         try:
             for row, cell in enumerate(self.ws[srchcol.upper()], 1):
@@ -217,10 +217,10 @@ class Xlsx:
             trgtcol (str): Column letter to set with corresponding value. ex: 'B'
             setval (str): Value to insert into target cell.
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             for row, cell in enumerate(self.ws[srchcol.upper()], 1):
@@ -242,10 +242,10 @@ class Xlsx:
             col (str): Column letter to search for the needed value.
             srch (str): Value to search for.
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         row = startrow
         try:
@@ -272,14 +272,14 @@ class Xlsx:
         Args:
             col (str): Column letter to search for the needed values.
             fndrplc (dict{str: str}): Dictionary of pairs to find and replace. 
-                    ex: {'find': 'replace'}.
+                ex: {'find': 'replace'}.
             skip (list(str), optional): List of values to ignore when replacing.
-                 Defaults to None.
+                Defaults to None.
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             if not skip:
@@ -308,10 +308,10 @@ class Xlsx:
             tcol (str): Target column letter to move located values to. ex: 'B'
             vals (list(str)): List of str values to move. ex: ('name', '20')
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             for row, cell in enumerate(self.ws[scol.upper()], 1):
@@ -339,12 +339,12 @@ class Xlsx:
             length (int): Total character length for correct values.
             fillcolor (str): Background fill color selection from COLORS dict.
             skip (list(str), optional): List of string values to skip when evaluating.
-                 Defaults to None.
+                Defaults to None.
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             if not skip:
@@ -375,10 +375,10 @@ class Xlsx:
             srch (str): Str value to search cells for.
             fillcolor (str): Background fill color selection from COLORS dict.
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             if COLORS.get(fillcolor):
@@ -405,12 +405,12 @@ class Xlsx:
         Args:
             col (str): Column containing data to convert
             numtype (str): 'i' or 'f' indicating which type of number 
-                    values the column contains (int/float)
+                values the column contains (int/float)
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             for row, cell in enumerate(self.ws[col.upper()], 1):
@@ -433,10 +433,10 @@ class Xlsx:
         Args:
             col (str): Column containing date values.
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             for row, cell in enumerate(self.ws[col.upper()], 1):
@@ -457,10 +457,10 @@ class Xlsx:
         Args:
             col (str): Column containing currency values.
             startrow (int, optional): Starting row number where values begin. 
-                     Defaults to 1.
+                Defaults to 1.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             for row, cell in enumerate(self.ws[col.upper()], 1):
@@ -482,10 +482,10 @@ class Xlsx:
 
         Args:
             pairs (dict): Dictionary of column/row keys with target size  
-                  as their values.
+                as their values.
 
         Returns:
-            self
+            self: Xlsx object.
         """
         try:
             for target, size in pairs.items():
@@ -513,7 +513,7 @@ class Xlsx:
 
         Args:
             savepath (str or pathlib.Path, optional): Output file location (including filename) 
-                     for your output file. Uses original if not specified. Defaults to None.
+                for your output file. Uses original if not specified. Defaults to None.
         """
         try:
             if savepath:
@@ -571,7 +571,7 @@ class Xlsx:
         Args:
             startrow (int, optional): First row to pull data from to generate the list. Defaults to 1.
             stoprow (int, optional): Last row to pull data from to generate the list. 
-                    If no value is passed, it will pull data from all rows after startrow. Defaults to None.
+                If no value is passed, it will pull data from all rows after startrow. Defaults to None.
 
         Returns:
             list: List of lists containing the values read from the cells.
