@@ -550,7 +550,6 @@ class Xlsx:
         data = {}
         keycolumn = keycol if keycol else 'A'
         datastart = hdrrow + 1 if not datastartrow else datastartrow
-
         try:
             for row, cell in enumerate(self.ws[keycolumn.upper()], 1):
                 keys = cell.value if keycol else f"{row:0>4}"
