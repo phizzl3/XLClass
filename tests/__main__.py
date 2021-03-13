@@ -59,8 +59,9 @@ class TestXlsx(unittest.TestCase):
         self.restore_original_data()
     
     def test_find_remove_row(self):
-        # remove and then search for value
-        pass
+        self.xl.find_remove_row('b', 'Switch', startrow=1)
+        self.assertFalse(self.xl.ws['D19'].value == 18000)
+        self.assertTrue(self.xl.ws['D19'].value == 19000)
     
     def test_find_replace(self):
         self.xl.find_replace(
