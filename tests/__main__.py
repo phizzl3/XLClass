@@ -103,8 +103,9 @@ class TestXlsx(unittest.TestCase):
         pass
     
     def test_generate_dictionary(self):
-        # generate and check values
-        pass
+        _dict = self.xl.generate_dictionary(
+            ('A', 'b', 'd', 'C', 'e'), keycol='b', hdrrow=1)
+        self.assertEqual(_dict['Cyan']['COLC'], 700)
     
     def test_generate_list(self):
         # generate and check values
