@@ -65,6 +65,11 @@ class TestXlsx(unittest.TestCase):
         pass
     
     def test_find_replace(self):
+        self.xl.find_replace(
+            'E', {'COLE': 'TEST'}, ('AB', 'CD'), startrow=1)
+        self.assertTrue(self.xl.get_matching_value(
+            'a', 'COLA', 'E', startrow=1) == 'TEST')
+        self.restore_original_data()
         # replace and verify value
         pass
     
