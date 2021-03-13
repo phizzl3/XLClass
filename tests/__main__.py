@@ -50,14 +50,12 @@ class TestXlsx(unittest.TestCase):
         pass
     
     def test_get_matching_value(self):
-        # get and check value
         self.assertTrue(self.xl.get_matching_value('a', 'M', 'D') == 13000)
     
     def test_set_matching_value(self):
         self.xl.set_matching_value(
             'a', 'O', 'E', 'TEST', startrow=4)
-        self.assertTrue(self.xl.get_matching_value(
-            'a', 'O', 'E', startrow=2) == 'TEST')
+        self.assertTrue(self.xl.ws['E16'].value == 'TEST')
         self.restore_original_data()
     
     def test_find_remove_row(self):
@@ -67,8 +65,7 @@ class TestXlsx(unittest.TestCase):
     def test_find_replace(self):
         self.xl.find_replace(
             'B', {'NES': 'TEST'}, ('AB', 'CD'), startrow=2)
-        self.assertTrue(self.xl.get_matching_value(
-            'a', 'L', 'B', startrow=2) == 'TEST')
+        self.assertTrue(self.xl.ws['B13'].value == 'TEST')
         self.restore_original_data()
     
     def test_move_values(self):
