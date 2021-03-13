@@ -54,8 +54,11 @@ class TestXlsx(unittest.TestCase):
         self.assertTrue(self.xl.get_matching_value('a', 'M', 'D') == 13000)
     
     def test_set_matching_value(self):
-        # set and check value
-        pass
+        self.xl.set_matching_value(
+            'a', 'O', 'E', 'TEST', startrow=4)
+        self.assertTrue(self.xl.get_matching_value(
+            'a', 'O', 'E', startrow=2) == 'TEST')
+        self.restore_original_data()
     
     def test_find_remove_row(self):
         # remove and then search for value
