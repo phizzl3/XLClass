@@ -72,8 +72,9 @@ class TestXlsx(unittest.TestCase):
         self.restore_original_data()
     
     def test_move_values(self):
-        # move and check value
-        pass
+        self.xl.move_values('B', 'C', ('Gameboy', 'Red'))
+        self.assertTrue(self.xl.ws['C15'].value == 'Gameboy')
+        self.restore_original_data()
     
     def test_verify_length(self):
         # check lengths
