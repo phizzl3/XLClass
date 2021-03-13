@@ -66,12 +66,10 @@ class TestXlsx(unittest.TestCase):
     
     def test_find_replace(self):
         self.xl.find_replace(
-            'E', {'COLE': 'TEST'}, ('AB', 'CD'), startrow=1)
+            'B', {'NES': 'TEST'}, ('AB', 'CD'), startrow=2)
         self.assertTrue(self.xl.get_matching_value(
-            'a', 'COLA', 'E', startrow=1) == 'TEST')
+            'a', 'L', 'B', startrow=2) == 'TEST')
         self.restore_original_data()
-        # replace and verify value
-        pass
     
     def test_move_values(self):
         # move and check value
