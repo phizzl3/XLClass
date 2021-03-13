@@ -20,8 +20,12 @@ class TestXlsx(unittest.TestCase):
         # Generate a list of original contents to reset when needed
         self.data = self.xl.generate_list()
 
-    def test_path(self):  #TODO: Move this to next function
+    def restore_original_data(self):
+        self.xl.ws.delete_rows(1, self.xl.ws.max_row)
+        for rowvalues in self.data:
+            self.xl.ws.append(rowvalues)
 
+    def test_path(self):  #TODO: Move this to next function
         self.assertTrue(str(self.xl.path).endswith("_test.xlsx"))
         
     def test_init(self):
@@ -100,6 +104,7 @@ class TestXlsx(unittest.TestCase):
     def test_generate_list(self):
         # generate and check values
         pass
+    
     
 
 
