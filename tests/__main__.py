@@ -46,8 +46,10 @@ class TestXlsx(unittest.TestCase):
         pass
     
     def test_name_headers(self):
-        # name and check values
-        pass
+        self.xl.name_headers({'A': 'TestA', 'D': 'TestD'}, bold=True)
+        self.assertEqual(self.xl.ws['A1'].value, 'TestA')
+        self.assertEqual(self.xl.ws['B1'].value, 'Strings')
+        self.assertEqual(self.xl.ws['D1'].value, 'TestD')
     
     def test_get_matching_value(self):
         self.assertEqual(self.xl.get_matching_value('a', 'M', 'B'), 'SNES')
@@ -106,11 +108,11 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(_dict['Cyan']['Currency'], 48398.58)
     
     def test_generate_list(self):
-        _list = self.xl.generate_list(startrow=4, stoprow=20)
+        _list = self.xl.generate_list(startrow=4, stoprow=14)
         self.assertEqual(_list[0][1], 'Purple')
         self.assertEqual(_list[6][2], 900)
         with self.assertRaises(IndexError):
-            _list[20][0]
+            _list[11][0]
     
     
 
