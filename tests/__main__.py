@@ -1,7 +1,7 @@
 """
 Run from top-level folder as module: 
 
-$ python3 -m tests
+$ python -m tests
 """
 
 import unittest
@@ -109,6 +109,8 @@ class TestXlsx(unittest.TestCase):
         _list = self.xl.generate_list(startrow=4, stoprow=20)
         self.assertEqual(_list[0][1], 'Purple')
         self.assertEqual(_list[6][2], 900)
+        with self.assertRaises(IndexError):
+            _list[20][0]
     
     
 
