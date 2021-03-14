@@ -106,8 +106,9 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(_dict['Cyan']['Currency'], 48398.58)
     
     def test_generate_list(self):
-        # generate and check values
-        pass
+        _list = self.xl.generate_list(startrow=4, stoprow=20)
+        self.assertEqual(_list[0][1], 'Purple')
+        self.assertEqual(_list[6][2], 900)
     
     
 
