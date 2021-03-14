@@ -3,5 +3,5 @@
 Run as module  
 
 ```bash
-$ python3 -m tests
+$ python -m tests
 ```
