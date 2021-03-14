@@ -50,28 +50,26 @@ class TestXlsx(unittest.TestCase):
         pass
     
     def test_get_matching_value(self):
-        self.assertTrue(self.xl.get_matching_value('a', 'M', 'D') == 13000)
+        self.assertEqual(self.xl.get_matching_value('a', 'M', 'B'), 'SNES')
     
     def test_set_matching_value(self):
-        self.xl.set_matching_value(
-            'a', 'O', 'E', 'TEST', startrow=4)
-        self.assertTrue(self.xl.ws['E16'].value == 'TEST')
+        self.xl.set_matching_value('a', 'O', 'E', 'TEST', startrow=4)
+        self.assertEqual(self.xl.ws['E16'].value, 'TEST')
         self.restore_original_data()
     
     def test_find_remove_row(self):
         self.xl.find_remove_row('b', 'Switch', startrow=1)
-        self.assertFalse(self.xl.ws['D19'].value == 18000)
-        self.assertTrue(self.xl.ws['D19'].value == 19000)
+        self.assertFalse(self.xl.ws['E19'].value == 29.5)
+        self.assertEqual(self.xl.ws['E19'].value, 433.0498)
     
     def test_find_replace(self):
-        self.xl.find_replace(
-            'B', {'NES': 'TEST'}, ('AB', 'CD'), startrow=2)
-        self.assertTrue(self.xl.ws['B13'].value == 'TEST')
+        self.xl.find_replace('B', {'NES': 'TEST'}, ('AB', 'CD'), startrow=2)
+        self.assertEqual(self.xl.ws['B13'].value, 'TEST')
         self.restore_original_data()
     
     def test_move_values(self):
         self.xl.move_values('B', 'C', ('Gameboy', 'Red'))
-        self.assertTrue(self.xl.ws['C15'].value == 'Gameboy')
+        self.assertEqual(self.xl.ws['C15'].value, 'Gameboy')
         self.restore_original_data()
     
     def test_verify_length(self):
@@ -105,7 +103,7 @@ class TestXlsx(unittest.TestCase):
     def test_generate_dictionary(self):
         _dict = self.xl.generate_dictionary(
             ('A', 'b', 'd', 'C', 'e'), keycol='b', hdrrow=1)
-        self.assertEqual(_dict['Cyan']['COLC'], 700)
+        self.assertEqual(_dict['Cyan']['Currency'], 48398.58)
     
     def test_generate_list(self):
         # generate and check values
