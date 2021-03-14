@@ -42,14 +42,19 @@ class TestXlsx(unittest.TestCase):
         pass
     
     def test_sort_and_replace(self):
-        # add random entry and sort and check cell values
-        pass
+        self.xl.sort_and_replace('B', startrow=2)
+        self.assertEqual(self.xl.ws['B1'].value, 'Strings')
+        self.assertEqual(self.xl.ws['B2'].value, 'Blue')
+        self.assertEqual(self.xl.ws['E6'].value, 25.5)
+        self.assertEqual(self.xl.ws['C20'].value, 500)
+        self.restore_original_data()
     
     def test_name_headers(self):
         self.xl.name_headers({'A': 'TestA', 'D': 'TestD'}, bold=True)
         self.assertEqual(self.xl.ws['A1'].value, 'TestA')
         self.assertEqual(self.xl.ws['B1'].value, 'Strings')
         self.assertEqual(self.xl.ws['D1'].value, 'TestD')
+        self.restore_original_data()
     
     def test_get_matching_value(self):
         self.assertEqual(self.xl.get_matching_value('a', 'M', 'B'), 'SNES')
