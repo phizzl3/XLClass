@@ -58,6 +58,7 @@ class TestXlsx(unittest.TestCase):
 
     def test_get_matching_value(self):
         self.assertEqual(self.xl.get_matching_value('a', 'M', 'B'), 'SNES')
+        self.assertEqual(self.xl.get_matching_value('B', 'DS', 'E'), 433.0498)
 
     def test_set_matching_value(self):
         self.xl.set_matching_value('a', 'O', 'E', 'TEST', startrow=4)
