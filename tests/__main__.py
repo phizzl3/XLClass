@@ -6,10 +6,11 @@ $ python -m tests
 
 import unittest
 from pathlib import Path
-
+import datetime
 from xlclass import Xlsx
 
 test_file = Path(__file__).resolve().parent / "_test.xlsx"
+test_CSV = Path(__file__).resolve().parent / "_testCSV.csv"
 
 
 class TestXlsx(unittest.TestCase):
@@ -17,8 +18,6 @@ class TestXlsx(unittest.TestCase):
     def setUp(self):
         # Add an Xlsx object as an attribute
         self.xl = Xlsx(test_file)
-        # Generate a list of original contents to reset when needed
-        self.data = self.xl.generate_list()
 
     def test_path(self):  # TODO: Move this to next function
         self.assertTrue(str(self.xl.path).endswith("_test.xlsx"))
@@ -32,9 +31,13 @@ class TestXlsx(unittest.TestCase):
     #     # check cell data match
     #     pass
 
-    # def test_copy_csv_data(self):
-    #     # check cell data match
-    #     pass
+    def test_copy_csv_data(self):
+        self.xl.ws.delete_rows(1, self.xl.ws.max_row)            
+        self.xl.copy_csv_data(test_CSV)
+        self.assertEqual(self.xl.ws['A1'].value, 'State')
+        self.assertEqual(self.xl.ws['B1'].value, 'Number')
+        self.assertEqual(self.xl.ws['A11'].value, 'Georgia')
+        self.assertEqual(self.xl.ws['B11'].value, '7')
 
     def test_sort_and_replace(self):
         self.xl.sort_and_replace('B', startrow=2)
@@ -87,13 +90,15 @@ class TestXlsx(unittest.TestCase):
     #     # fix and read in and verify value
     #     pass
 
-    # def test_format_date(self):
-    #     # fix and read in and verify value
-    #     pass
+    def test_format_date(self):
+        self.assertIsInstance(self.xl.ws['D7'].value, datetime.datetime)
+        self.xl.format_date('d', startrow=2)
+        self.assertEqual(self.xl.ws['D7'].value, '04/25/2019')
+        self.assertIsInstance(self.xl.ws['D7'].value, str)
 
-    # def test_format_currency(self):
-    #     # fix and read in and verify value
-    #     pass
+    def test_format_currency(self):
+        self.xl.format_currency('E', startrow=2) 
+        self.assertIsInstance(self.xl.ws['E12'].value, float)
 
     # def test_set_cell_size(self):
     #     # set and verify on save out
