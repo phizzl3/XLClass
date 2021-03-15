@@ -139,6 +139,9 @@ class TestXlsx(unittest.TestCase):
         no assert methods.
         """
         self.xl.highlight_rows('B', 'Cyan', 'yellow', startrow=2)
+        self.xl.highlight_rows('A', 'Q', 'red', startrow=2)
+        #TODO self.xl.highlight_rows('c', 300, 'green', startrow=2)
+        self.xl.highlight_rows('d', '05/12/20', 'orange', startrow=2)
 
     def test_number_type_fix(self):
         """
