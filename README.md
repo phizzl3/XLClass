@@ -1,4 +1,4 @@
-# Xlclass
+# XLClass
 
  A Class I put together for working with Excel files using openpyxl for my common uses.  
 
