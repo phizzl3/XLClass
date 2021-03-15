@@ -1,15 +1,19 @@
 """
 Run from top-level folder as module: 
 
-$ python -m tests
+$ python -m tests (-v for verbose mode)
+
+Requirements:
+openpyxl==3.0.6
+
 """
 
+import datetime
 import unittest
 from pathlib import Path
-import datetime
-from xlclass import Xlsx
-import openpyxl
 
+import openpyxl
+from xlclass import Xlsx
 
 tests_path = Path(__file__).resolve().parent
 test_file = tests_path / "_test.xlsx"
@@ -19,13 +23,13 @@ test_CSV = tests_path / "_testCSV.csv"
 class TestXlsx(unittest.TestCase):
 
     def setUp(self):
-        # Add an Xlsx object as an attribute
         self.xl = Xlsx(test_file)
 
     def test_init(self):
         self.assertTrue(str(self.xl.path).endswith("_test.xlsx"))
         self.assertIsInstance(self.xl.wb, openpyxl.Workbook)
-        self.assertIsInstance(self.xl.ws, openpyxl.worksheet.worksheet.Worksheet)
+        self.assertIsInstance(
+            self.xl.ws, openpyxl.worksheet.worksheet.Worksheet)
         # xls conversion
 
     def test_copy_sheet_data(self):
@@ -35,7 +39,7 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl_temp.ws['C20'].value, 1900)
 
     def test_copy_csv_data(self):
-        self.xl.ws.delete_rows(1, self.xl.ws.max_row)            
+        self.xl.ws.delete_rows(1, self.xl.ws.max_row)
         self.xl.copy_csv_data(test_CSV)
         self.assertEqual(self.xl.ws['A1'].value, 'State')
         self.assertEqual(self.xl.ws['B1'].value, 'Number')
@@ -78,7 +82,7 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws['C15'].value, 'Gameboy')
 
     def test_verify_length(self):
-        self.xl.verify_length('B', 4, 'red', startrow=2)  #TODO: Fix int/stop
+        self.xl.verify_length('B', 4, 'red', startrow=2)  # TODO: Fix int/stop
 
     def test_highlight_rows(self):
         self.xl.highlight_rows('B', 'Cyan', 'yellow', startrow=2)
@@ -93,7 +97,7 @@ class TestXlsx(unittest.TestCase):
         self.assertIsInstance(self.xl.ws['D7'].value, str)
 
     def test_format_currency(self):
-        self.xl.format_currency('E', startrow=2) 
+        self.xl.format_currency('E', startrow=2)
         self.assertIsInstance(self.xl.ws['E12'].value, float)
 
     def test_set_cell_size(self):
