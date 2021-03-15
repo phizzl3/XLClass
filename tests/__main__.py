@@ -8,6 +8,8 @@ import unittest
 from pathlib import Path
 import datetime
 from xlclass import Xlsx
+import openpyxl
+
 
 tests_path = Path(__file__).resolve().parent
 test_file = tests_path / "_test.xlsx"
@@ -20,13 +22,11 @@ class TestXlsx(unittest.TestCase):
         # Add an Xlsx object as an attribute
         self.xl = Xlsx(test_file)
 
-    # def test_path(self):  # TODO: Move this to next function
-    #     self.assertTrue(str(self.xl.path).endswith("_test.xlsx"))
-
-    # def test_init(self):
-    #     # xls conversion
-    #     # xlsx path
-    #     pass
+    def test_init(self):
+        self.assertTrue(str(self.xl.path).endswith("_test.xlsx"))
+        self.assertIsInstance(self.xl.wb, openpyxl.Workbook)
+        self.assertIsInstance(self.xl.ws, openpyxl.worksheet.worksheet.Worksheet)
+        # xls conversion
 
     def test_copy_sheet_data(self):
         self.xl_temp = Xlsx()
