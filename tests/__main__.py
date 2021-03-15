@@ -9,8 +9,9 @@ from pathlib import Path
 import datetime
 from xlclass import Xlsx
 
-test_file = Path(__file__).resolve().parent / "_test.xlsx"
-test_CSV = Path(__file__).resolve().parent / "_testCSV.csv"
+tests_path = Path(__file__).resolve().parent
+test_file = tests_path / "_test.xlsx"
+test_CSV = tests_path / "_testCSV.csv"
 
 
 class TestXlsx(unittest.TestCase):
@@ -19,8 +20,8 @@ class TestXlsx(unittest.TestCase):
         # Add an Xlsx object as an attribute
         self.xl = Xlsx(test_file)
 
-    def test_path(self):  # TODO: Move this to next function
-        self.assertTrue(str(self.xl.path).endswith("_test.xlsx"))
+    # def test_path(self):  # TODO: Move this to next function
+    #     self.assertTrue(str(self.xl.path).endswith("_test.xlsx"))
 
     # def test_init(self):
     #     # xls conversion
@@ -93,13 +94,15 @@ class TestXlsx(unittest.TestCase):
         self.xl.format_currency('E', startrow=2) 
         self.assertIsInstance(self.xl.ws['E12'].value, float)
 
-    # def test_set_cell_size(self):
-    #     # set and verify on save out
-    #     pass
+    def test_set_cell_size(self):
+        self.xl.set_cell_size({'A': 48, 2: 20})
 
-    # def test_save(self):
-    #     # save out and verify path exists
-    #     pass
+    def test_save(self):
+        self.assertFalse(Path(f'{tests_path / "outfile.xlsx"}').exists())
+        self.xl.save(f'{tests_path / "outfile.xlsx"}')
+        self.assertTrue(Path(f'{tests_path / "outfile.xlsx"}').exists())
+        Path(f'{tests_path / "outfile.xlsx"}').unlink()
+        self.assertFalse(Path(f'{tests_path / "outfile.xlsx"}').exists())
 
     def test_generate_dictionary(self):
         _dict = self.xl.generate_dictionary(
