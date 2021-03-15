@@ -54,6 +54,7 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws['A1'].value, 'TestA')
         self.assertEqual(self.xl.ws['B1'].value, 'Strings')
         self.assertEqual(self.xl.ws['D1'].value, 'TestD')
+        self.assertEqual(self.xl.ws['B2'].value, 'Red')
 
     def test_get_matching_value(self):
         self.assertEqual(self.xl.get_matching_value('a', 'M', 'B'), 'SNES')
