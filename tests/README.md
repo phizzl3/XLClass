@@ -1,7 +1,7 @@
 # Run Tests
 
-Run as module  
+Run as module from top-level directory  
 
 ```bash
-$ python -m tests
+$ python -m tests (-v for verbose mode)
 ```
