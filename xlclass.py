@@ -1,5 +1,5 @@
 """
-# 03.16.2021 TODO: - UPDATED INIT - NEEDS NEW DOCS
+# 03.16.2021
 
 Requirements:
 python 3.6+
