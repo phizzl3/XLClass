@@ -16,8 +16,8 @@ import openpyxl
 from xlclass import Xlsx
 
 tests_path = Path(__file__).resolve().parent
-test_file = tests_path / "_test.xlsx"
-test_CSV = tests_path / "_testCSV.csv"
+test_xlsx = tests_path / "_test.xlsx"
+test_csv = tests_path / "_test.csv"
 
 
 class TestXlsx(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestXlsx(unittest.TestCase):
         """
         Generate test Xlsx object for each test. 
         """
-        self.xl = Xlsx(test_file)
+        self.xl = Xlsx(test_xlsx)
 
     def test_init(self):
         """
@@ -56,7 +56,7 @@ class TestXlsx(unittest.TestCase):
         expected.
         """
         self.xl.ws.delete_rows(1, self.xl.ws.max_row)
-        self.xl.copy_csv_data(test_CSV)
+        self.xl.copy_csv_data(test_csv)
         self.assertEqual(self.xl.ws['A1'].value, 'State')
         self.assertEqual(self.xl.ws['B1'].value, 'Number')
         self.assertEqual(self.xl.ws['A11'].value, 'Georgia')
