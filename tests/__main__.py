@@ -46,8 +46,8 @@ class TestXlsx(unittest.TestCase):
 
     def test_xls_conversion(self):
         """
-        Test xls -> xlsx conversion during __init__() and verify cell data
-        returns as expected.
+        Test xls -> xlsx conversion during __init__() and verify cell 
+        data returns as expected.
         """
         self.xl = Xlsx(test_xls, 'Sheet1')
         self.assertIsInstance(self.xl.wb, openpyxl.Workbook)
@@ -159,7 +159,7 @@ class TestXlsx(unittest.TestCase):
         """
         self.xl.highlight_rows('B', 'Cyan', 'yellow', startrow=2)
         self.xl.highlight_rows('A', 'Q', 'red', startrow=2)
-        #TODO self.xl.highlight_rows('c', 300, 'green', startrow=2)
+        # TODO self.xl.highlight_rows('c', 300, 'green', startrow=2)
         self.xl.highlight_rows('d', '05/12/20', 'orange', startrow=2)
 
     def test_number_type_fix(self):
@@ -235,13 +235,14 @@ class TestXlsx(unittest.TestCase):
 
     def iterate_integers(self, i=100):
         """
-        Iterate through Integers row and check for equality. For use in other
-        test methods.
+        Iterate through Integers row and check for equality. For use in 
+        other test methods.
         """
         for row, cell in enumerate(self.xl.ws['C'], 1):
             if row > 1:
                 self.assertEqual(cell.value, i)
                 i += 100
+
 
 if __name__ == '__main__':
     unittest.main()
