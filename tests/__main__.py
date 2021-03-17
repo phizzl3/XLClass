@@ -45,11 +45,12 @@ class TestXlsx(unittest.TestCase):
         Test xls -> xlsx conversion during __init__() and verify cell data
         returns as expected.
         """
-        self.xls = Xlsx(test_xls, 'Sheet1')
-        self.assertIsInstance(self.xls.wb, openpyxl.Workbook)
-        self.assertEqual(self.xls.ws['A9'].value, 'H')
-        self.assertEqual(self.xls.ws['B12'].value, 'Triangle')
-        self.assertEqual(self.xls.ws['E20'].value, 433.0498)
+        self.xl = Xlsx(test_xls, 'Sheet1')
+        self.assertIsInstance(self.xl.wb, openpyxl.Workbook)
+        self.assertEqual(self.xl.ws['A9'].value, 'H')
+        self.assertEqual(self.xl.ws['B12'].value, 'Triangle')
+        self.assertEqual(self.xl.ws['E20'].value, 433.0498)
+        self.iterate_integers()
 
     def test_copy_sheet_data(self):
         """
@@ -225,6 +226,15 @@ class TestXlsx(unittest.TestCase):
         with self.assertRaises(IndexError):
             _list[11][0]
 
+    def iterate_integers(self, i=100):
+        """
+        Iterate through Integers row and check for equality. For use in other
+        test methods.
+        """
+        for row, cell in enumerate(self.xl.ws['C'], 1):
+            if row > 1:
+                self.assertEqual(cell.value, i)
+                i += 100
 
 if __name__ == '__main__':
     unittest.main()
