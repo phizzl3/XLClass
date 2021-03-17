@@ -61,6 +61,7 @@ class TestXlsx(unittest.TestCase):
         self.xl_temp.copy_sheet_data(self.xl, {'B': 'A', 'D': 'B', 'C': 'C'})
         self.assertEqual(self.xl_temp.ws['A9'].value, 'Magenta')
         self.assertEqual(self.xl_temp.ws['C20'].value, 1900)
+        self.iterate_integers()
 
     def test_copy_csv_data(self):
         """
@@ -95,6 +96,7 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws['B1'].value, 'Strings')
         self.assertEqual(self.xl.ws['D1'].value, 'TestD')
         self.assertEqual(self.xl.ws['B2'].value, 'Red')
+        self.iterate_integers()
 
     def test_get_matching_value(self):
         """
@@ -162,6 +164,7 @@ class TestXlsx(unittest.TestCase):
         column. Currently no assert methods. 
         """
         self.xl.number_type_fix('C', 'i', startrow=2)
+        self.iterate_integers()
 
     def test_format_date(self):
         """
