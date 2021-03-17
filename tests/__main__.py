@@ -4,7 +4,11 @@ Run from top-level folder as module:
 $ python -m tests (-v for verbose mode)
 
 Requirements:
+python 3.6+
+
 openpyxl==3.0.6
+pandas==1.2.2
+xlrd==2.0.1
 
 """
 
@@ -16,8 +20,9 @@ import openpyxl
 from xlclass import Xlsx
 
 tests_path = Path(__file__).resolve().parent
-test_file = tests_path / "_test.xlsx"
-test_CSV = tests_path / "_testCSV.csv"
+test_xlsx = tests_path / "_test.xlsx"
+test_csv = tests_path / "_test.csv"
+test_xls = tests_path / "_test.xls"
 
 
 class TestXlsx(unittest.TestCase):
@@ -26,7 +31,7 @@ class TestXlsx(unittest.TestCase):
         """
         Generate test Xlsx object for each test. 
         """
-        self.xl = Xlsx(test_file)
+        self.xl = Xlsx(test_xlsx)
 
     def test_init(self):
         """
@@ -39,6 +44,18 @@ class TestXlsx(unittest.TestCase):
         self.assertIsInstance(
             self.xl.ws, openpyxl.worksheet.worksheet.Worksheet)
 
+    def test_xls_conversion(self):
+        """
+        Test xls -> xlsx conversion during __init__() and verify cell 
+        data returns as expected.
+        """
+        self.xl = Xlsx(test_xls, 'Sheet1')
+        self.assertIsInstance(self.xl.wb, openpyxl.Workbook)
+        self.assertEqual(self.xl.ws['A9'].value, 'H')
+        self.assertEqual(self.xl.ws['B12'].value, 'Triangle')
+        self.assertEqual(self.xl.ws['E20'].value, 433.0498)
+        self.iterate_integers()
+
     def test_copy_sheet_data(self):
         """
         Create a temporary blank workbook, copy selected data to the 
@@ -48,6 +65,7 @@ class TestXlsx(unittest.TestCase):
         self.xl_temp.copy_sheet_data(self.xl, {'B': 'A', 'D': 'B', 'C': 'C'})
         self.assertEqual(self.xl_temp.ws['A9'].value, 'Magenta')
         self.assertEqual(self.xl_temp.ws['C20'].value, 1900)
+        self.iterate_integers()
 
     def test_copy_csv_data(self):
         """
@@ -56,7 +74,7 @@ class TestXlsx(unittest.TestCase):
         expected.
         """
         self.xl.ws.delete_rows(1, self.xl.ws.max_row)
-        self.xl.copy_csv_data(test_CSV)
+        self.xl.copy_csv_data(test_csv)
         self.assertEqual(self.xl.ws['A1'].value, 'State')
         self.assertEqual(self.xl.ws['B1'].value, 'Number')
         self.assertEqual(self.xl.ws['A11'].value, 'Georgia')
@@ -82,6 +100,7 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws['B1'].value, 'Strings')
         self.assertEqual(self.xl.ws['D1'].value, 'TestD')
         self.assertEqual(self.xl.ws['B2'].value, 'Red')
+        self.iterate_integers()
 
     def test_get_matching_value(self):
         """
@@ -140,7 +159,7 @@ class TestXlsx(unittest.TestCase):
         """
         self.xl.highlight_rows('B', 'Cyan', 'yellow', startrow=2)
         self.xl.highlight_rows('A', 'Q', 'red', startrow=2)
-        #TODO self.xl.highlight_rows('c', 300, 'green', startrow=2)
+        # TODO self.xl.highlight_rows('c', 300, 'green', startrow=2)
         self.xl.highlight_rows('d', '05/12/20', 'orange', startrow=2)
 
     def test_number_type_fix(self):
@@ -149,6 +168,7 @@ class TestXlsx(unittest.TestCase):
         column. Currently no assert methods. 
         """
         self.xl.number_type_fix('C', 'i', startrow=2)
+        self.iterate_integers()
 
     def test_format_date(self):
         """
@@ -212,6 +232,16 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(_list[6][2], 900)
         with self.assertRaises(IndexError):
             _list[11][0]
+
+    def iterate_integers(self, i=100):
+        """
+        Iterate through Integers row and check for equality. For use in 
+        other test methods.
+        """
+        for row, cell in enumerate(self.xl.ws['C'], 1):
+            if row > 1:
+                self.assertEqual(cell.value, i)
+                i += 100
 
 
 if __name__ == '__main__':
