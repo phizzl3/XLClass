@@ -18,6 +18,7 @@ from xlclass import Xlsx
 tests_path = Path(__file__).resolve().parent
 test_xlsx = tests_path / "_test.xlsx"
 test_csv = tests_path / "_test.csv"
+test_xls = tests_path / "_test.xls"
 
 
 class TestXlsx(unittest.TestCase):
@@ -38,6 +39,17 @@ class TestXlsx(unittest.TestCase):
         self.assertIsInstance(self.xl.wb, openpyxl.Workbook)
         self.assertIsInstance(
             self.xl.ws, openpyxl.worksheet.worksheet.Worksheet)
+
+    def test_xls_conversion(self):
+        """
+        Test xls -> xlsx conversion during __init__() and verify cell data
+        returns as expected.
+        """
+        self.xls = Xlsx(test_xls, 'Sheet1')
+        self.assertIsInstance(self.xls.wb, openpyxl.Workbook)
+        self.assertEqual(self.xls.ws['A9'].value, 'H')
+        self.assertEqual(self.xls.ws['B12'].value, 'Triangle')
+        self.assertEqual(self.xls.ws['E20'].value, 433.0498)
 
     def test_copy_sheet_data(self):
         """
