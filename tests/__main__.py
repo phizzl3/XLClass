@@ -151,6 +151,8 @@ class TestXlsx(unittest.TestCase):
         values. Currently no assert methods.
         """
         self.xl.verify_length('B', 4, 'red', startrow=2)
+        self.xl.verify_length('E', 5, 
+                              'green', skip=['test1', 'test2'], stoprow=8)
 
     def test_highlight_rows(self):
         """
