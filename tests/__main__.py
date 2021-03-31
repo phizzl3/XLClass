@@ -151,6 +151,8 @@ class TestXlsx(unittest.TestCase):
         values. Currently no assert methods.
         """
         self.xl.verify_length('B', 4, 'red', startrow=2)
+        self.xl.verify_length('E', 5, 
+                              'green', skip=['test1', 'test2'], stoprow=8)
 
     def test_highlight_rows(self):
         """
@@ -187,8 +189,9 @@ class TestXlsx(unittest.TestCase):
         Test format_currency runs on an entire column, and then verify 
         cell value data is of type:float.
         """
-        self.xl.format_currency('E', startrow=2)
-        self.assertIsInstance(self.xl.ws['E12'].value, float)
+        self.xl.format_currency('E', startrow=2, stoprow=19)
+        self.assertIsInstance(self.xl.ws['E15'].value, float)
+        self.assertEqual(self.xl.ws['E19'].value, 29.50)
 
     def test_set_cell_size(self):
         """
