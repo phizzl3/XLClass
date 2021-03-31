@@ -388,7 +388,7 @@ class Xlsx:
         return self
 
     def verify_length(self, col, length, fillcolor, skip=None,
-                      startrow=1) -> object:
+                      startrow=1, stoprow=None) -> object:
         """
         Cycle through values in a column to verify their length marking 
         cells of an incorrect length with a background fill color. 
@@ -397,23 +397,27 @@ class Xlsx:
             col (str): Column to search for values. ex: 'B'
             length (int): Total character length for correct values.
             fillcolor (str): Background fill color selection from COLORS
-                dict.
+            dict.
             skip (list(str), optional): List of string values to skip 
-                when evaluating. Defaults to None.
+            when evaluating. Defaults to None.
             startrow (int, optional): Starting row number where values 
-                begin. Defaults to 1.
+            begin. Defaults to 1.
+            stoprow (int, optional): Ending row number where values end.
+            Defaults to None.
 
         Returns:
             self: Xlsx object.
         """
+        if not stoprow:
+            stoprow = self.ws.max_row
         try:
             if not skip:
                 skip = []
             if COLORS.get(fillcolor):
                 for row, cell in enumerate(self.ws[col.upper()], 1):
-                    if row >= startrow:
-                        if cell.value and cell.value.lower() not in skip:
-                            if len(cell.value) != length:
+                    if startrow <= row <= stoprow:
+                        if cell.value and str(cell.value).lower() not in skip:
+                            if len(str(cell.value)) != length:
                                 self.ws[
                                     f'{col.upper()}{row}'].fill = COLORS.get(
                                     fillcolor)
