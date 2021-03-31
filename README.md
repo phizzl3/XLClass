@@ -6,7 +6,9 @@ Generates an Xlsx object with Openpyxl Workbook/Worksheet objects as attributes 
 
 ## Requirements
 
-* openpyxl
+* openpyxl==3.0.6
+* pandas==1.2.2
+* xlrd==2.0.1
 
 ```bash
 $ pip install -r requirements.txt
