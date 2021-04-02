@@ -1,5 +1,5 @@
 """
-# 03.16.2021
+# 04.02.2021
 
 Requirements:
 python 3.6+
@@ -33,7 +33,7 @@ class Xlsx:
     as attributes for use with the enclosed methods.
     """
 
-    def __init__(self, filepath: str=None, sheetname: str=None) -> None:
+    def __init__(self, filepath: str = None, sheetname: str = None) -> None:
         """
         Initialize main attributes for Xlsx objects if Path points to
         an existing Excel file. Creates a blank Workbook/Worksheet 
@@ -75,9 +75,8 @@ class Xlsx:
                     self.ws.delete_rows(1, 1)
 
                 except Exception as e:
-                    print(f"\n Error: {e}")
-                    print("\n Error converting from xls be sure to ", end='')
-                    print("include sheetname argument when passing file.")
+                    print(f"\n Error: {e}\n Error converting from xls be sure "
+                          "to include sheetname argument when passing file.")
                     input(" \"sheetname='Invoice'\", etc\n ENTER to close...")
                     exit(" Exiting...")
 
@@ -165,7 +164,7 @@ class Xlsx:
 
         return self
 
-    def sort_and_replace(self, sortcol: str, startrow: int=1) -> object:
+    def sort_and_replace(self, sortcol: str, startrow: int = 1) -> object:
         """
         Sort and replace cell values based on values of a specific 
         column. Use this BEFORE any cell formatting, etc as it DELETES 
@@ -199,8 +198,8 @@ class Xlsx:
 
         return self
 
-    def name_headers(self, headers: dict, 
-                     hdrrow=1, bold: bool=False) -> object:
+    def name_headers(self, headers: dict,
+                     hdrrow=1, bold: bool = False) -> object:
         """
         Cycle through header row and fill cells with values.
 
@@ -228,8 +227,8 @@ class Xlsx:
 
         return self
 
-    def get_matching_value(self, srchcol: str, srchval: str, 
-                           retcol: str, startrow: int=1) -> str:
+    def get_matching_value(self, srchcol: str, srchval: str,
+                           retcol: str, startrow: int = 1) -> str:
         """
         Search column for a value and return the corresponding value
         from another column in the same row.
@@ -258,8 +257,8 @@ class Xlsx:
 
         return False
 
-    def set_matching_value(self, srchcol: str, srchval: str, trgtcol: str, 
-                           setval: str, startrow: int=1) -> object:
+    def set_matching_value(self, srchcol: str, srchval: str, trgtcol: str,
+                           setval: str, startrow: int = 1) -> object:
         """
         Search column for a value and set a corresponding value in 
         another column in the same row.
@@ -288,7 +287,7 @@ class Xlsx:
 
         return self
 
-    def find_remove_row(self, col: str, srch: str, startrow: int=1) -> object:
+    def find_remove_row(self, col: str, srch: str, startrow: int = 1) -> object:
         """
         Remove row based on a specific value found in a column.
 
@@ -318,8 +317,8 @@ class Xlsx:
 
         return self
 
-    def find_replace(self, col: str, fndrplc: dict, 
-                     skip: list=None, startrow: int=1) -> object:
+    def find_replace(self, col: str, fndrplc: dict,
+                     skip: list = None, startrow: int = 1) -> object:
         """
         Search column for a string value and replace it the value is
         not listed in 'skip'.
@@ -355,8 +354,8 @@ class Xlsx:
 
         return self
 
-    def move_values(self, scol: str, tcol: str, 
-                    vals: list, startrow: int=1) -> object:
+    def move_values(self, scol: str, tcol: str,
+                    vals: list, startrow: int = 1) -> object:
         """
         Search source column for passed list of values and 
         move them to target column. 
@@ -391,9 +390,9 @@ class Xlsx:
 
         return self
 
-    def verify_length(self, col: str, length: int, fillcolor: str, 
-                      skip: list=None, startrow: int=1, 
-                      stoprow: int=None) -> object:
+    def verify_length(self, col: str, length: int, fillcolor: str,
+                      skip: list = None, startrow: int = 1,
+                      stoprow: int = None) -> object:
         """
         Cycle through values in a column to verify their length marking 
         cells of an incorrect length with a background fill color. 
@@ -435,8 +434,8 @@ class Xlsx:
 
         return self
 
-    def highlight_rows(self, col: str, srch: str, 
-                       fillcolor: str, startrow: int=1) -> object:
+    def highlight_rows(self, col: str, srch: str,
+                       fillcolor: str, startrow: int = 1) -> object:
         """
         Search row for specified str value and fill entire row 
         with specified background fill color when found. 
@@ -469,8 +468,8 @@ class Xlsx:
 
         return self
 
-    def number_type_fix(self, col: str, 
-                        numtype: str, startrow: int=1) -> object:
+    def number_type_fix(self, col: str,
+                        numtype: str, startrow: int = 1) -> object:
         """
         Quick fix for cells that contain numbers formatted as 
         text/str data. Cycle through cells replacing str formatted 
@@ -500,7 +499,7 @@ class Xlsx:
 
         return self
 
-    def format_date(self, col: str, startrow: int=1) -> object:
+    def format_date(self, col: str, startrow: int = 1) -> object:
         """
         Format str date value to (MM/DD/YYYY).
 
@@ -524,8 +523,8 @@ class Xlsx:
 
         return self
 
-    def format_currency(self, col: str, 
-                        startrow: int=1, stoprow: int=None) -> object:
+    def format_currency(self, col: str,
+                        startrow: int = 1, stoprow: int = None) -> object:
         """
         Format str currency value to ($0,000.00).
 
@@ -584,7 +583,7 @@ class Xlsx:
 
         return self
 
-    def save(self, savepath: str=None) -> None:
+    def save(self, savepath: str = None) -> None:
         """
         Duplicates openpyxl's save function so it can be called on the 
         object without needing the .wb attribute, etc. Saves the Excel 
@@ -609,8 +608,8 @@ class Xlsx:
             print(f"\nError - save: {e}")
             input("[ENTER] to continue...")
 
-    def generate_dictionary(self, datacols: list, keycol: str=None, 
-                            hdrrow: int=1, datastartrow: int=None) -> dict:
+    def generate_dictionary(self, datacols: list, keycol: str = None,
+                            hdrrow: int = 1, datastartrow: int = None) -> dict:
         """
         Reads the headers and cells from the spreadsheet and usees them 
         to generate a dictionary of the data. Data listed in *keycol* on 
@@ -654,7 +653,7 @@ class Xlsx:
             print(f"\nError - generate_dictionary: {e}")
             input("[ENTER] to continue...")
 
-    def generate_list(self, startrow: int=1, stoprow: int=None) -> list:
+    def generate_list(self, startrow: int = 1, stoprow: int = None) -> list:
         """
         Generates a list of lists containing all cell values from 
         startrow to stoprow (inclusive). (Use _list.pop(0) on returned 
