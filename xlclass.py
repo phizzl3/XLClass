@@ -1,5 +1,5 @@
 """
-# 04.02.2021
+# 05.01.2021
 
 Requirements:
 python 3.6+
@@ -345,7 +345,7 @@ class Xlsx:
                             if find in str(cell.value):
                                 self.ws[
                                     f'{col.upper()}{row}'
-                                ] = cell.value.replace(
+                                ] = str(cell.value).replace(
                                     find, replace)
 
         except Exception as e:
