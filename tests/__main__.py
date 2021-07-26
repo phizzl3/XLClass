@@ -259,6 +259,28 @@ class TestXlsx(unittest.TestCase):
         check_3 = self.xl.search_matching_value('Currency', 'Square')
         self.assertEqual(check_3, '20.5')
 
+    def test_set_bold_rows(self):
+        """
+        Tests set_bold_rows with and without arguments just to make sure
+        it runs without errors.
+        """
+        self.xl.set_bold_rows()
+        self.xl.set_bold_rows(startrow=4, stoprow=16)
+        self.xl.set_bold_rows(startrow=6)
+        self.xl.set_bold_rows(stoprow=18)
+
+    def test_highlight_rows(self):
+        """
+        Tests highlight_rows with and without arguments to make sure it runs
+        with no errors.
+        """
+        self.xl.highlight_rows()
+        self.xl.highlight_rows(startrow=2, stoprow=8,
+                               fillcolor='red', alternate=True)
+        self.xl.highlight_rows(stoprow=5, alternate=True)
+        self.xl.highlight_rows(startrow=3, stoprow=14, fillcolor='yellow')
+        self.xl.highlight_rows(fillcolor='BREAK!')
+
 
 if __name__ == '__main__':
     unittest.main()
