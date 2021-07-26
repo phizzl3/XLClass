@@ -154,15 +154,15 @@ class TestXlsx(unittest.TestCase):
         self.xl.verify_length('E', 5,
                               'green', skip=['test1', 'test2'], stoprow=8)
 
-    def test_highlight_rows(self):
+    def test_find_and_highlight_rows(self):
         """
-        Test that highlight_rows runs on a specified column. Currently
-        no assert methods.
+        Test that find_and_highlight_rows runs on a specified column. 
+        Currently no assert methods.
         """
-        self.xl.highlight_rows('B', 'Cyan', 'yellow', startrow=2)
-        self.xl.highlight_rows('A', 'Q', 'red', startrow=2)
+        self.xl.find_and_highlight_rows('B', 'Cyan', 'yellow', startrow=2)
+        self.xl.find_and_highlight_rows('A', 'Q', 'red', startrow=2)
         # TODO self.xl.highlight_rows('c', 300, 'green', startrow=2)
-        self.xl.highlight_rows('d', '05/12/20', 'orange', startrow=2)
+        self.xl.find_and_highlight_rows('d', '05/12/20', 'orange', startrow=2)
 
     def test_number_type_fix(self):
         """
@@ -257,6 +257,28 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(check_2, '1800')
         check_3 = self.xl.search_matching_value('Currency', 'Square')
         self.assertEqual(check_3, '20.5')
+
+    def test_set_bold_rows(self):
+        """
+        Tests set_bold_rows with and without arguments just to make sure
+        it runs without errors.
+        """
+        self.xl.set_bold_rows()
+        self.xl.set_bold_rows(startrow=4, stoprow=16)
+        self.xl.set_bold_rows(startrow=6)
+        self.xl.set_bold_rows(stoprow=18)
+
+    def test_highlight_rows(self):
+        """
+        Tests highlight_rows with and without arguments to make sure it runs
+        with no errors.
+        """
+        self.xl.highlight_rows()
+        self.xl.highlight_rows(startrow=2, stoprow=8,
+                               fillcolor='red', alternate=True)
+        self.xl.highlight_rows(stoprow=5, alternate=True)
+        self.xl.highlight_rows(startrow=3, stoprow=14, fillcolor='yellow')
+        self.xl.highlight_rows(fillcolor='BREAK!')
 
 
 if __name__ == '__main__':

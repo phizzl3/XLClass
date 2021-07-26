@@ -1,5 +1,5 @@
 """
-# 05.01.2021
+# 07.26.2021
 
 Requirements:
 python 3.6+
@@ -466,8 +466,9 @@ class Xlsx:
 
         return self
 
-    def highlight_rows(self, col: str, srch: str,
-                       fillcolor: str, startrow: int = 1) -> object:
+    def find_and_highlight_rows(self, col: str, srch: str, 
+                                fillcolor: str = 'red', 
+                                startrow: int = 1) -> object:
         """
         Search row for specified str value and fill entire row 
         with specified background fill color when found. 
@@ -706,3 +707,68 @@ class Xlsx:
             row_data.append([cell.value for cell in row])
 
         return row_data
+
+    def set_bold_rows(self, startrow: int = 1, stoprow: int = 2) -> object:
+        """
+        Sets all cells in specified rows to bold beginning at startrow 
+        and ending just before stoprow.
+
+        Args:
+            startrow (int, optional): Row number where bold text should begin.
+            Defaults to 1.
+            stoprow (int, optional): Row number (not included) where bold text
+            should stop. Defaults to 2.
+
+        Returns:
+            self: Xlsx object.
+        """
+        for row_number, row in enumerate(self.ws.iter_rows(), 1):
+            if row_number < startrow:
+                continue
+            if row_number == stoprow:
+                break
+            for cell in row:
+                cell.font = Font(bold=True)
+
+        return self
+
+    def highlight_rows(self, startrow: int = 1,
+                       stoprow: int = 2, fillcolor: str = 'gray',
+                       alternate: bool = False) -> object:
+        """
+        Highlights specified rows (optionally alternating) using passed 
+        color (from xlclass.COLORS dict) starting at startrow and ending 
+        just before stoprow.
+
+        Args:
+            startrow (int, optional): Row number where highlighting should
+            begin. Defaults to 1.
+            stoprow (int, optional): Row number (not included in highlights)
+            where highlighting should end. Defaults to 2.
+            fillcolor (str, optional): Color choice from xlclass.COLORS 
+            dictionary to be used as fill color. Defaults to 'gray'.
+            alternate (bool, optional): Option to alternate rows to 
+            highlight. Defaults to False.
+
+        Returns:
+            self: Xlsx object.
+        """
+        if not COLORS.get(fillcolor):
+            print(f"Color: '{fillcolor}' not available.")
+            return self
+
+        highlight_row = startrow
+        for row_number, row in enumerate(self.ws.iter_rows(), 1):
+            if row_number < startrow:
+                continue
+            if row_number == stoprow:
+                break
+            if row_number == highlight_row:
+                for cell in row:
+                    cell.fill = COLORS.get(fillcolor)
+                if not alternate:
+                    highlight_row += 1
+                else:
+                    highlight_row += 2
+
+        return self
