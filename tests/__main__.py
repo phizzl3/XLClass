@@ -154,16 +154,15 @@ class TestXlsx(unittest.TestCase):
         self.xl.verify_length('E', 5,
                               'green', skip=['test1', 'test2'], stoprow=8)
 
-    def test_search_and_highlight_rows(self):
+    def test_find_and_highlight_rows(self):
         """
-        Test that search_and_highlight_rows runs on a specified column. 
+        Test that find_and_highlight_rows runs on a specified column. 
         Currently no assert methods.
         """
-        self.xl.search_and_highlight_rows('B', 'Cyan', 'yellow', startrow=2)
-        self.xl.search_and_highlight_rows('A', 'Q', 'red', startrow=2)
+        self.xl.find_and_highlight_rows('B', 'Cyan', 'yellow', startrow=2)
+        self.xl.find_and_highlight_rows('A', 'Q', 'red', startrow=2)
         # TODO self.xl.highlight_rows('c', 300, 'green', startrow=2)
-        self.xl.search_and_highlight_rows(
-            'd', '05/12/20', 'orange', startrow=2)
+        self.xl.find_and_highlight_rows('d', '05/12/20', 'orange', startrow=2)
 
     def test_number_type_fix(self):
         """
