@@ -466,8 +466,8 @@ class Xlsx:
 
         return self
 
-    def highlight_rows(self, col: str, srch: str,
-                       fillcolor: str, startrow: int = 1) -> object:
+    def search_and_highlight_rows(self, col: str, srch: str,
+                       fillcolor: str = 'red', startrow: int = 1) -> object:
         """
         Search row for specified str value and fill entire row 
         with specified background fill color when found. 
