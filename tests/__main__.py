@@ -151,7 +151,7 @@ class TestXlsx(unittest.TestCase):
         values. Currently no assert methods.
         """
         self.xl.verify_length('B', 4, 'red', startrow=2)
-        self.xl.verify_length('E', 5, 
+        self.xl.verify_length('E', 5,
                               'green', skip=['test1', 'test2'], stoprow=8)
 
     def test_highlight_rows(self):
@@ -245,6 +245,18 @@ class TestXlsx(unittest.TestCase):
             if row > 1:
                 self.assertEqual(cell.value, i)
                 i += 100
+
+    def test_search_matching_value(self):
+        """
+        Tests search_matching_value to verify that the return values
+        are as expected.
+        """
+        check_1 = self.xl.search_matching_value('Strings', 'L')
+        self.assertEqual(check_1, 'NES')
+        check_2 = self.xl.search_matching_value('Integers', 'S')
+        self.assertEqual(check_2, '1800')
+        check_3 = self.xl.search_matching_value('Currency', 'Square')
+        self.assertEqual(check_3, '20.5')
 
 
 if __name__ == '__main__':

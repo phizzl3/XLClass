@@ -257,6 +257,38 @@ class Xlsx:
 
         return False
 
+    def search_matching_value(self, header_srch_value: str,
+                              row_srch_value: str) -> str:
+        """
+        Searches cells by row for header search value and row search 
+        value, and returns corresponding cell value matching both as
+        a string.
+
+        Args:
+            header_srch_value (str): Header name to search for.
+            row_srch_value (str): Row name to search for.
+
+        Returns:
+            str: Matching (intersecting) value corresponding to the
+            searched header and row value. Returns False if not found.
+        """
+        search_column, search_row = 0, 0
+
+        for row in self.ws.iter_rows():
+            for cell_number, cell_data in enumerate(row, 1):
+                if cell_data.value == header_srch_value:
+                    search_column += cell_number
+
+                if cell_data.value == row_srch_value:
+                    search_row = True
+
+                if search_row:
+                    if cell_number == search_column:
+                        return str(cell_data.value)
+
+        # In case search isn't located.
+        return False
+
     def set_matching_value(self, srchcol: str, srchval: str, trgtcol: str,
                            setval: str, startrow: int = 1) -> object:
         """
