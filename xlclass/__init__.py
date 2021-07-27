@@ -59,30 +59,10 @@ class Xlsx:
                     input("xls_support.py file not found.")
                     exit("Exiting...")
                     
-                    
-                # try:
-                #     # Read data from xls and create xlsx object
-                #     df = pd.read_excel(filepath, sheet_name=sheetname)
-                #     self.path = filepath
-                #     self.wb = openpyxl.Workbook()
-                #     self.ws = self.wb.active
-                #     self.ws.title = sheetname
-                #     # Copy row data from xls to new xlsx object
-                #     for row in dataframe_to_rows(df):
-                #         self.ws.append(row)
-                #     # Remove index row/colum created by Pandas
-                #     self.ws.delete_cols(1, 1)
-                #     self.ws.delete_rows(1, 1)
-
-                # except Exception as e:
-                #     print(f"\n Error: {e}\n Error converting from xls be sure "
-                #           "to include sheetname argument when passing file.")
-                #     input(" \"sheetname='Invoice'\", etc\n ENTER to close...")
-                #     exit(" Exiting...")
-
             elif str(filepath).endswith(".xlsx"):
                 self.path = filepath
                 self.wb = openpyxl.load_workbook(filepath)
+
                 # Set first sheet as active if only one is present
                 if len(self.wb.sheetnames) == 1:
                     self.ws = self.wb.active
