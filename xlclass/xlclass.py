@@ -62,7 +62,7 @@ class Xlsx:
             if str(filepath).endswith(".xls"):
                 try:
                     from .xls_support import convert_xls
-                    
+                    convert_xls(self)
                 except ImportError:
                     input("xls_support.py file not found.")
                     exit("Exiting...")
