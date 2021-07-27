@@ -3,10 +3,10 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 import openpyxl
 
 
-def conver_xls(obj, filepath, sheetname):
+def convert_xls(obj, filepath=None, sheetname=None):
 
     # Convert xls to xlsx data using Pandas/Xlrd
-    if not filepath:
+    if not filepath and sheetname:
         input("Error converting from xls.\nBe sure to include the sheetname "
               "when passing your filepath.")
         exit("Exiting...")

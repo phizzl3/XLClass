@@ -14,9 +14,9 @@ import csv
 import datetime
 import operator
 import openpyxl
-import pandas as pd
+# import pandas as pd
 from openpyxl.styles import Font, PatternFill
-from openpyxl.utils.dataframe import dataframe_to_rows
+# from openpyxl.utils.dataframe import dataframe_to_rows
 
 # Color dict for background fill
 COLORS = {'red': PatternFill(fgColor='FF0000', fill_type='solid'),
@@ -62,7 +62,7 @@ class Xlsx:
             if str(filepath).endswith(".xls"):
                 try:
                     from .xls_support import convert_xls
-                    convert_xls(self)
+                    convert_xls(self, filepath, sheetname)
                 except ImportError:
                     input("xls_support.py file not found.")
                     exit("Exiting...")
