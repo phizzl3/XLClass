@@ -17,7 +17,7 @@ import unittest
 from pathlib import Path
 
 import openpyxl
-from xlclass.xlclass import Xlsx
+from xlclass import Xlsx
 
 tests_path = Path(__file__).resolve().parent
 test_xlsx = tests_path / "_test.xlsx"
