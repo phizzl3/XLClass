@@ -1,12 +1,21 @@
 """
 # 07.26.2021
+Module containing class for working with Excel *.xlsx files using Openpyxl.
+Generates an Xlsx object with Openpyxl Workbook/Worksheet objects as 
+attributes for use with the enclosed methods.
 
-openpyxl==3.0.6
+Requirements:
+* openpyxl==3.0.6
+
+xls support Requirements:
+* pandas==1.2.2
+* xlrd==2.0.1
 """
 
 import csv
 import datetime
 import operator
+
 import openpyxl
 from openpyxl.styles import Font, PatternFill
 
@@ -24,6 +33,8 @@ class Xlsx:
     Generates an Xlsx object with Openpyxl Workbook/Worksheet objects
     as attributes for use with the enclosed methods.
     """
+
+# NOTE: FILE INPUT/OUTPUT
 
     def __init__(self, filepath: str = None, sheetname: str = None) -> None:
         """
@@ -58,7 +69,7 @@ class Xlsx:
                 except ImportError:
                     input("xls_support.py file not found.")
                     exit("Exiting...")
-                    
+
             elif str(filepath).endswith(".xlsx"):
                 self.path = filepath
                 self.wb = openpyxl.load_workbook(filepath)
@@ -92,13 +103,40 @@ class Xlsx:
             else:
                 input("File not supported. Please use .xlsx or xls.")
                 exit("Exiting...")
-                
+
         else:
             # If not file is passed, create a new object and set
             # active worksheet.
             self.path = None
             self.wb = openpyxl.Workbook()
             self.ws = self.wb.active
+
+    def save(self, savepath: str = None) -> None:
+        """
+        Duplicates openpyxl's save function so it can be called on the 
+        object without needing the .wb attribute, etc. Saves the Excel 
+        file to the specified filepath or Path location if passed. If no 
+        filepath is passed, uses the original file's Path (.path attr) 
+        to save over the original.
+
+        Args:
+            savepath (str or pathlib.Path, optional): Output file 
+                location (including filename) for your output file. Uses
+                original if not specified. Defaults to None.
+        """
+        try:
+            if savepath:
+                self.wb.save(savepath)
+            elif self.path:
+                self.wb.save(self.path)
+            else:
+                input("\n No savepath found...")
+
+        except Exception as e:
+            print(f"\nError - save: {e}")
+            input("[ENTER] to continue...")
+
+# NOTE: MANIPULATE SHEET DATA
 
     def copy_sheet_data(self, other: object, columns: dict) -> object:
         """
@@ -210,68 +248,6 @@ class Xlsx:
             input("[ENTER] to continue...")
 
         return self
-
-    def get_matching_value(self, srchcol: str, srchval: str,
-                           retcol: str, startrow: int = 1) -> str:
-        """
-        Search column for a value and return the corresponding value
-        from another column in the same row.
-
-        Args:
-            srchcol (str): Column letter to search for a value. ex: 'A'
-            srchval (str): Value to search column for. ex: 'Total'
-            retcol (str): Column letter containing the corresponding 
-                value to be returned. ex: 'B'
-            startrow (int, optional): Starting row number where values 
-                begin. Defaults to 1.
-
-        Returns:
-            str: Value from corresponding cell in the same row as search
-                value. Returns False if value search value is not found.
-        """
-        try:
-            for row, cell in enumerate(self.ws[srchcol.upper()], 1):
-                if row >= startrow and cell.value:
-                    if srchval in str(cell.value):
-                        return self.ws[f'{retcol.upper()}{row}'].value
-
-        except Exception as e:
-            print(f"\nError - get_matching_value: {e}")
-            input("[ENTER] to continue...")
-
-        return False
-
-    def search_matching_value(self, header_srch_value: str,
-                              row_srch_value: str) -> str:
-        """
-        Searches cells by row for header search value and row search 
-        value, and returns corresponding cell value matching both as
-        a string.
-
-        Args:
-            header_srch_value (str): Header name to search for.
-            row_srch_value (str): Row name to search for.
-
-        Returns:
-            str: Matching (intersecting) value corresponding to the
-            searched header and row value. Returns False if not found.
-        """
-        search_column, search_row = 0, 0
-
-        for row in self.ws.iter_rows():
-            for cell_number, cell_data in enumerate(row, 1):
-                if cell_data.value == header_srch_value:
-                    search_column += cell_number
-
-                if cell_data.value == row_srch_value:
-                    search_row = True
-
-                if search_row:
-                    if cell_number == search_column:
-                        return str(cell_data.value)
-
-        # In case search isn't located.
-        return False
 
     def set_matching_value(self, srchcol: str, srchval: str, trgtcol: str,
                            setval: str, startrow: int = 1) -> object:
@@ -406,6 +382,72 @@ class Xlsx:
 
         return self
 
+# NOTE: RETURN SHEET DATA
+
+    def get_matching_value(self, srchcol: str, srchval: str,
+                           retcol: str, startrow: int = 1) -> str:
+        """
+        Search column for a value and return the corresponding value
+        from another column in the same row.
+
+        Args:
+            srchcol (str): Column letter to search for a value. ex: 'A'
+            srchval (str): Value to search column for. ex: 'Total'
+            retcol (str): Column letter containing the corresponding 
+                value to be returned. ex: 'B'
+            startrow (int, optional): Starting row number where values 
+                begin. Defaults to 1.
+
+        Returns:
+            str: Value from corresponding cell in the same row as search
+                value. Returns False if value search value is not found.
+        """
+        try:
+            for row, cell in enumerate(self.ws[srchcol.upper()], 1):
+                if row >= startrow and cell.value:
+                    if srchval in str(cell.value):
+                        return self.ws[f'{retcol.upper()}{row}'].value
+
+        except Exception as e:
+            print(f"\nError - get_matching_value: {e}")
+            input("[ENTER] to continue...")
+
+        return False
+
+    def search_matching_value(self, header_srch_value: str,
+                              row_srch_value: str) -> str:
+        """
+        Searches cells by row for header search value and row search 
+        value, and returns corresponding cell value matching both as
+        a string.
+
+        Args:
+            header_srch_value (str): Header name to search for.
+            row_srch_value (str): Row name to search for.
+
+        Returns:
+            str: Matching (intersecting) value corresponding to the
+            searched header and row value. Returns False if not found.
+        """
+        search_column, search_row = 0, 0
+
+        for row in self.ws.iter_rows():
+            for cell_number, cell_data in enumerate(row, 1):
+                if cell_data.value == header_srch_value:
+                    search_column += cell_number
+
+                if cell_data.value == row_srch_value:
+                    search_row = True
+
+                if search_row:
+                    if cell_number == search_column:
+                        return str(cell_data.value)
+
+        # In case search isn't located.
+        return False
+
+# NOTE: VALIDATE SHEET DATA
+
     def verify_length(self, col: str, length: int, fillcolor: str,
                       skip: list = None, startrow: int = 1,
                       stoprow: int = None) -> object:
@@ -450,8 +492,8 @@ class Xlsx:
 
         return self
 
-    def find_and_highlight_rows(self, col: str, srch: str, 
-                                fillcolor: str = 'red', 
+    def find_and_highlight_rows(self, col: str, srch: str,
+                                fillcolor: str = 'red',
                                 startrow: int = 1) -> object:
         """
         Search row for specified str value and fill entire row 
@@ -484,6 +526,8 @@ class Xlsx:
             input("[ENTER] to continue...")
 
         return self
+
+# NOTE: FORMAT AND STYLE
 
     def number_type_fix(self, col: str,
                         numtype: str, startrow: int = 1) -> object:
@@ -600,30 +644,72 @@ class Xlsx:
 
         return self
 
-    def save(self, savepath: str = None) -> None:
+    def set_bold_rows(self, startrow: int = 1, stoprow: int = 2) -> object:
         """
-        Duplicates openpyxl's save function so it can be called on the 
-        object without needing the .wb attribute, etc. Saves the Excel 
-        file to the specified filepath or Path location if passed. If no 
-        filepath is passed, uses the original file's Path (.path attr) 
-        to save over the original.
+        Sets all cells in specified rows to bold beginning at startrow 
+        and ending just before stoprow.
 
         Args:
-            savepath (str or pathlib.Path, optional): Output file 
-                location (including filename) for your output file. Uses
-                original if not specified. Defaults to None.
-        """
-        try:
-            if savepath:
-                self.wb.save(savepath)
-            elif self.path:
-                self.wb.save(self.path)
-            else:
-                input("\n No savepath found...")
+            startrow (int, optional): Row number where bold text should begin.
+            Defaults to 1.
+            stoprow (int, optional): Row number (not included) where bold text
+            should stop. Defaults to 2.
 
-        except Exception as e:
-            print(f"\nError - save: {e}")
-            input("[ENTER] to continue...")
+        Returns:
+            self: Xlsx object.
+        """
+        for row_number, row in enumerate(self.ws.iter_rows(), 1):
+            if row_number < startrow:
+                continue
+            if row_number == stoprow:
+                break
+            for cell in row:
+                cell.font = Font(bold=True)
+
+        return self
+
+    def highlight_rows(self, startrow: int = 1,
+                       stoprow: int = 2, fillcolor: str = 'gray',
+                       alternate: bool = False) -> object:
+        """
+        Highlights specified rows (optionally alternating) using passed 
+        color (from xlclass.COLORS dict) starting at startrow and ending 
+        just before stoprow.
+
+        Args:
+            startrow (int, optional): Row number where highlighting should
+            begin. Defaults to 1.
+            stoprow (int, optional): Row number (not included in highlights)
+            where highlighting should end. Defaults to 2.
+            fillcolor (str, optional): Color choice from xlclass.COLORS 
+            dictionary to be used as fill color. Defaults to 'gray'.
+            alternate (bool, optional): Option to alternate rows to 
+            highlight. Defaults to False.
+
+        Returns:
+            self: Xlsx object.
+        """
+        if not COLORS.get(fillcolor):
+            print(f"Color: '{fillcolor}' not available.")
+            return self
+
+        highlight_row = startrow
+        for row_number, row in enumerate(self.ws.iter_rows(), 1):
+            if row_number < startrow:
+                continue
+            if row_number == stoprow:
+                break
+            if row_number == highlight_row:
+                for cell in row:
+                    cell.fill = COLORS.get(fillcolor)
+                if not alternate:
+                    highlight_row += 1
+                else:
+                    highlight_row += 2
+
+        return self
+
+# NOTE: ITERABLES GENERATION
 
     def generate_dictionary(self, datacols: list, keycol: str = None,
                             hdrrow: int = 1, datastartrow: int = None) -> dict:
@@ -691,68 +777,3 @@ class Xlsx:
             row_data.append([cell.value for cell in row])
 
         return row_data
-
-    def set_bold_rows(self, startrow: int = 1, stoprow: int = 2) -> object:
-        """
-        Sets all cells in specified rows to bold beginning at startrow 
-        and ending just before stoprow.
-
-        Args:
-            startrow (int, optional): Row number where bold text should begin.
-            Defaults to 1.
-            stoprow (int, optional): Row number (not included) where bold text
-            should stop. Defaults to 2.
-
-        Returns:
-            self: Xlsx object.
-        """
-        for row_number, row in enumerate(self.ws.iter_rows(), 1):
-            if row_number < startrow:
-                continue
-            if row_number == stoprow:
-                break
-            for cell in row:
-                cell.font = Font(bold=True)
-
-        return self
-
-    def highlight_rows(self, startrow: int = 1,
-                       stoprow: int = 2, fillcolor: str = 'gray',
-                       alternate: bool = False) -> object:
-        """
-        Highlights specified rows (optionally alternating) using passed 
-        color (from xlclass.COLORS dict) starting at startrow and ending 
-        just before stoprow.
-
-        Args:
-            startrow (int, optional): Row number where highlighting should
-            begin. Defaults to 1.
-            stoprow (int, optional): Row number (not included in highlights)
-            where highlighting should end. Defaults to 2.
-            fillcolor (str, optional): Color choice from xlclass.COLORS 
-            dictionary to be used as fill color. Defaults to 'gray'.
-            alternate (bool, optional): Option to alternate rows to 
-            highlight. Defaults to False.
-
-        Returns:
-            self: Xlsx object.
-        """
-        if not COLORS.get(fillcolor):
-            print(f"Color: '{fillcolor}' not available.")
-            return self
-
-        highlight_row = startrow
-        for row_number, row in enumerate(self.ws.iter_rows(), 1):
-            if row_number < startrow:
-                continue
-            if row_number == stoprow:
-                break
-            if row_number == highlight_row:
-                for cell in row:
-                    cell.fill = COLORS.get(fillcolor)
-                if not alternate:
-                    highlight_row += 1
-                else:
-                    highlight_row += 2
-
-        return self
