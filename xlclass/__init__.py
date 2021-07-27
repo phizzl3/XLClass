@@ -17,7 +17,7 @@ import datetime
 import operator
 
 import openpyxl
-from openpyxl.styles import Font, PatternFill
+from openpyxl.styles import Border, Font, PatternFill, Side
 
 # Color dict for background fill
 COLORS = {'red': PatternFill(fgColor='FF0000', fill_type='solid'),
@@ -475,14 +475,14 @@ class Xlsx:
         try:
             if not skip:
                 skip = []
-            if COLORS.get(fillcolor):
+            if COLORS.get(fillcolor.lower()):
                 for row, cell in enumerate(self.ws[col.upper()], 1):
                     if startrow <= row <= stoprow:
                         if cell.value and str(cell.value).lower() not in skip:
                             if len(str(cell.value)) != length:
                                 self.ws[
                                     f'{col.upper()}{row}'].fill = COLORS.get(
-                                    fillcolor)
+                                    fillcolor.lower())
             else:
                 print(f" Color '{fillcolor}' not available.")
 
@@ -511,13 +511,13 @@ class Xlsx:
             self: Xlsx object.
         """
         try:
-            if COLORS.get(fillcolor):
+            if COLORS.get(fillcolor.lower()):
                 for row, cell in enumerate(self.ws[col.upper()], 1):
                     if row >= startrow:
                         if cell.value and srch.lower() in str(
                                 cell.value).lower():
                             for each in self.ws[f'{row}:{row}']:
-                                each.fill = COLORS.get(fillcolor)
+                                each.fill = COLORS.get(fillcolor.lower())
             else:
                 print(f" Color '{fillcolor}' not available.")
 
@@ -644,16 +644,18 @@ class Xlsx:
 
         return self
 
-    def set_bold_rows(self, startrow: int = 1, stoprow: int = 2) -> object:
+    def set_bold_rows(self, startrow: int = 1, stoprow: int = 0) -> object:
         """
         Sets all cells in specified rows to bold beginning at startrow 
-        and ending just before stoprow.
+        and ending just before stoprow (if passed). Sets all cells below
+        startrow to bold if stoprow isn't passed. *Uses the default font 
+        family and size settings and overrides any other styles.
 
         Args:
             startrow (int, optional): Row number where bold text should begin.
             Defaults to 1.
             stoprow (int, optional): Row number (not included) where bold text
-            should stop. Defaults to 2.
+            should stop. Defaults to 0.
 
         Returns:
             self: Xlsx object.
@@ -661,7 +663,7 @@ class Xlsx:
         for row_number, row in enumerate(self.ws.iter_rows(), 1):
             if row_number < startrow:
                 continue
-            if row_number == stoprow:
+            if stoprow and row_number == stoprow:
                 break
             for cell in row:
                 cell.font = Font(bold=True)
@@ -669,18 +671,19 @@ class Xlsx:
         return self
 
     def highlight_rows(self, startrow: int = 1,
-                       stoprow: int = 2, fillcolor: str = 'gray',
+                       stoprow: int = 0, fillcolor: str = 'gray',
                        alternate: bool = False) -> object:
         """
         Highlights specified rows (optionally alternating) using passed 
         color (from xlclass.COLORS dict) starting at startrow and ending 
-        just before stoprow.
+        just before stoprow. Highlights all remaining rows if stoprow is
+        not passed.
 
         Args:
             startrow (int, optional): Row number where highlighting should
             begin. Defaults to 1.
             stoprow (int, optional): Row number (not included in highlights)
-            where highlighting should end. Defaults to 2.
+            where highlighting should end. Defaults to 0.
             fillcolor (str, optional): Color choice from xlclass.COLORS 
             dictionary to be used as fill color. Defaults to 'gray'.
             alternate (bool, optional): Option to alternate rows to 
@@ -689,7 +692,7 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        if not COLORS.get(fillcolor):
+        if not COLORS.get(fillcolor.lower()):
             print(f"Color: '{fillcolor}' not available.")
             return self
 
@@ -701,11 +704,66 @@ class Xlsx:
                 break
             if row_number == highlight_row:
                 for cell in row:
-                    cell.fill = COLORS.get(fillcolor)
+                    cell.fill = COLORS.get(fillcolor.lower())
                 if not alternate:
                     highlight_row += 1
                 else:
                     highlight_row += 2
+
+        return self
+
+    def set_sheet_font_style(self,
+                             fontname: str = 'Arial', size: int = 8) -> object:
+        """
+        Sets all cells to specified font name and size.
+        *Overrides any other font style settings in selected cells.
+
+        Args:
+            fontname (str, optional): Font name to use. Defaults to 'Arial'.
+            size (int, optional): Font size to use. Defaults to 8.
+
+        Returns:
+            self: Xlsx object.
+        """
+        try:
+            for row in self.ws.iter_rows():
+                for cell in row:
+                    cell.font = Font(name=fontname, size=str(size))
+
+        except Exception as e:
+            input(f"\n Error - set_sheet_font_style :{e}")
+
+        return self
+
+    def add_cell_borders(self, startrow: int = 1, stoprow: int = 0) -> object:
+        """
+        Set thin cell borders around all populated cells beginning at 
+        startrow and ending at stoprow. If no stoprow is passed, borders 
+        will be added until the end of the populated cells.
+
+        Args:
+            startrow (int, optional): Row number where borders should begin. 
+            Defaults to 1.
+            stoprow (int, optional): Row number where borders should end. 
+            Defaults to 0.
+
+        Returns:
+            self: Xlsx object
+        """
+        try:
+            for row_num, row_data in enumerate(self.ws.iter_rows(), 1):
+                if row_num < startrow:
+                    continue
+                if stoprow and row_num == stoprow:
+                    break
+                for cell in row_data:
+                    cell.border = Border(left=Side(style='thin'),
+                                         right=Side(style='thin'),
+                                         top=Side(style='thin'),
+                                         bottom=Side(style='thin'))
+
+        except Exception as e:
+            input(f"\n Error - add_cell_borders :{e}")
 
         return self
 

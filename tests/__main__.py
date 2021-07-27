@@ -280,6 +280,24 @@ class TestXlsx(unittest.TestCase):
         self.xl.highlight_rows(startrow=3, stoprow=14, fillcolor='yellow')
         self.xl.highlight_rows(fillcolor='BREAK!')
 
+    def test_set_sheet_font_style(self):
+        """
+        Tests set_sheet_font_styles just to make sure it runs with no errors.
+        """
+        self.xl.set_sheet_font_style()
+        self.xl.set_sheet_font_style(fontname='Courier New', size=100)
+        self.xl.set_sheet_font_style(fontname='Courier New')
+        self.xl.set_sheet_font_style(size=100)
+        
+    def test_add_cell_borders(self):
+        """
+        Tests add_cell_borders just to make sure it runs with no errors.
+        """
+        self.xl.add_cell_borders()
+        self.xl.add_cell_borders(startrow=2, stoprow=8)
+        self.xl.add_cell_borders(startrow=2)
+        self.xl.add_cell_borders(stoprow=8)
+        
 
 if __name__ == '__main__':
     unittest.main()
