@@ -14,9 +14,7 @@ import csv
 import datetime
 import operator
 import openpyxl
-# import pandas as pd
 from openpyxl.styles import Font, PatternFill
-# from openpyxl.utils.dataframe import dataframe_to_rows
 
 # Color dict for background fill
 COLORS = {'red': PatternFill(fgColor='FF0000', fill_type='solid'),
