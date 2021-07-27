@@ -1,10 +1,12 @@
 """
 Adds xls conversion support using pandas and xlrd.
 
-Requirements:
+Delete this file and skip the following requirements if you don't 
+need xls support.
 
-pandas==1.2.2
-xlrd==2.0.1
+Requirements:
+* pandas==1.2.2
+* xlrd==2.0.1
 
 """
 import pandas as pd
