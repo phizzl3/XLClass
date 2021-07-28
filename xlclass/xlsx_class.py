@@ -6,6 +6,7 @@ import openpyxl
 from openpyxl.styles import Border, Font, Side
 
 from .globals import COLORS
+from .xls_support import convert_xls
 
 
 class Xlsx:
@@ -44,12 +45,7 @@ class Xlsx:
         if filepath:
             # Convert xls to xlsx data using Pandas/Xlrd
             if str(filepath).endswith(".xls"):
-                try:
-                    from .xls_support import convert_xls
-                    convert_xls(self, filepath, sheetname)
-                except ImportError:
-                    input("xls_support.py file not found.")
-                    exit("Exiting...")
+                convert_xls(self, filepath, sheetname)
 
             elif str(filepath).endswith(".xlsx"):
                 self.path = filepath

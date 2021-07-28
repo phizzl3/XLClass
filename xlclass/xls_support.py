@@ -1,20 +1,27 @@
 """
 Adds xls conversion support using pandas and xlrd.
 
-Delete this file and skip the following requirements if you don't 
-need xls support.
-
 Requirements:
 * pandas==1.2.2
 * xlrd==2.0.1
 
 """
-import pandas as pd
-from openpyxl.utils.dataframe import dataframe_to_rows
+try:
+    import pandas as pd
+except ImportError:
+    pd = False
+
 import openpyxl
+from openpyxl.utils.dataframe import dataframe_to_rows
 
 
 def convert_xls(obj, filepath=None, sheetname=None):
+    """
+    Converts .xls data to Xlsx object.
+    """
+    if not pd:
+        input(".xls support requirements missing. Check requirements.txt")
+        exit("Exiting...")
 
     # Convert xls to xlsx data using Pandas/Xlrd
     if not filepath and sheetname:
