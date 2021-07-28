@@ -124,17 +124,13 @@ class Xlsx:
                 location (including filename) for your output file. Uses
                 original if not specified. Defaults to None.
         """
-        try:
-            if savepath:
-                self.wb.save(savepath)
-            elif self.path:
-                self.wb.save(self.path)
-            else:
-                input("\n No savepath found...")
+        if savepath:
+            self.wb.save(savepath)
+        elif self.path:
+            self.wb.save(self.path)
+        else:
+            input("\n No savepath found...")
 
-        except Exception as e:
-            print(f"\nError - save: {e}")
-            input("[ENTER] to continue...")
 
 # NOTE: MANIPULATE SHEET DATA
 
@@ -153,15 +149,10 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            for row, _cell in enumerate(other.ws['A'], 1):
-                for scol, tcol in columns.items():
-                    self.ws[f'{tcol.upper()}{row}'] = other.ws[
-                        f'{scol.upper()}{row}'].value
-
-        except Exception as e:
-            print(f"\nError - copy_sheet_data: {e}")
-            input("[ENTER] to continue...")
+        for row, _cell in enumerate(other.ws['A'], 1):
+            for scol, tcol in columns.items():
+                self.ws[f'{tcol.upper()}{row}'] = other.ws[
+                    f'{scol.upper()}{row}'].value
 
         return self
 
@@ -175,14 +166,9 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            with open(incsv, 'r') as f:
-                reader = csv.reader(f)
-                [self.ws.append(row) for row in reader]
-
-        except Exception as e:
-            print(f"\nError - copy_csv_data: {e}")
-            input("[ENTER] to continue...")
+        with open(incsv, 'r') as f:
+            reader = csv.reader(f)
+            [self.ws.append(row) for row in reader]
 
         return self
 
@@ -201,22 +187,17 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            sortme = []
-            for row, rowdata in enumerate(self.ws.iter_rows(), 1):
-                if row >= startrow:
-                    sortme.append([str(self.ws[
-                        f'{sortcol.upper()}{row}'].value).lower(), rowdata])
+        sortme = []
+        for row, rowdata in enumerate(self.ws.iter_rows(), 1):
+            if row >= startrow:
+                sortme.append([str(self.ws[
+                    f'{sortcol.upper()}{row}'].value).lower(), rowdata])
 
-            self.ws.delete_rows(startrow, self.ws.max_row)
+        self.ws.delete_rows(startrow, self.ws.max_row)
 
-            for _sortval, rowdata in sorted(
-                    sortme, key=operator.itemgetter(0)):
-                self.ws.append(rowdata)
-
-        except Exception as e:
-            print(f"\nError - sort_and_replace: {e}")
-            input("[ENTER] to continue...")
+        for _sortval, rowdata in sorted(
+                sortme, key=operator.itemgetter(0)):
+            self.ws.append(rowdata)
 
         return self
 
@@ -236,16 +217,11 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            for col, name in headers.items():
-                self.ws[f'{col.upper()}{hdrrow}'] = name
-            if bold:
-                for each in self.ws[f'{hdrrow}:{hdrrow}']:
-                    each.font = Font(bold=True)
-
-        except Exception as e:
-            print(f"\nError - name_headers: {e}")
-            input("[ENTER] to continue...")
+        for col, name in headers.items():
+            self.ws[f'{col.upper()}{hdrrow}'] = name
+        if bold:
+            for each in self.ws[f'{hdrrow}:{hdrrow}']:
+                each.font = Font(bold=True)
 
         return self
 
@@ -267,15 +243,10 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            for row, cell in enumerate(self.ws[srchcol.upper()], 1):
-                if row >= startrow and cell.value:
-                    if srchval in str(cell.value):
-                        self.ws[f'{trgtcol.upper()}{row}'] = setval
-
-        except Exception as e:
-            print(f"\nError - set_matching_value: {e}")
-            input("[ENTER] to continue...")
+        for row, cell in enumerate(self.ws[srchcol.upper()], 1):
+            if row >= startrow and cell.value:
+                if srchval in str(cell.value):
+                    self.ws[f'{trgtcol.upper()}{row}'] = setval
 
         return self
 
@@ -293,19 +264,14 @@ class Xlsx:
             self: Xlsx object.
         """
         row = startrow
-        try:
-            while row <= self.ws.max_row:
-                if self.ws[f'{col.upper()}{row}'].value:
-                    if srch in str(self.ws[f'{col.upper()}{row}'].value):
-                        self.ws.delete_rows(row, 1)
-                    else:
-                        row += 1
+        while row <= self.ws.max_row:
+            if self.ws[f'{col.upper()}{row}'].value:
+                if srch in str(self.ws[f'{col.upper()}{row}'].value):
+                    self.ws.delete_rows(row, 1)
                 else:
                     row += 1
-
-        except Exception as e:
-            print(f"\nError - find_remove_row: {e}")
-            input("[ENTER] to continue...")
+            else:
+                row += 1
 
         return self
 
@@ -327,22 +293,17 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            if not skip:
-                skip = []
-            for row, cell in enumerate(self.ws[col.upper()], 1):
-                if row >= startrow:
-                    if cell.value and str(cell.value).lower() not in skip:
-                        for find, replace in fndrplc.items():
-                            if find in str(cell.value):
-                                self.ws[
-                                    f'{col.upper()}{row}'
-                                ] = str(cell.value).replace(
-                                    find, replace)
-
-        except Exception as e:
-            print(f"\nError - find_replace: {e}")
-            input("[ENTER] to continue...")
+        if not skip:
+            skip = []
+        for row, cell in enumerate(self.ws[col.upper()], 1):
+            if row >= startrow:
+                if cell.value and str(cell.value).lower() not in skip:
+                    for find, replace in fndrplc.items():
+                        if find in str(cell.value):
+                            self.ws[
+                                f'{col.upper()}{row}'
+                            ] = str(cell.value).replace(
+                                find, replace)
 
         return self
 
@@ -365,20 +326,15 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            for row, cell in enumerate(self.ws[scol.upper()], 1):
-                if cell.value and row >= startrow:
-                    for item in vals:
-                        if item in str(cell.value):
-                            self.ws[f'{tcol.upper()}{row}'] = item
-                            self.ws[
-                                f'{scol.upper()}{row}'] = cell.value.replace(
-                                item, '')
-                            break
-
-        except Exception as e:
-            print(f"\nError - move_values: {e}")
-            input("[ENTER] to continue...")
+        for row, cell in enumerate(self.ws[scol.upper()], 1):
+            if cell.value and row >= startrow:
+                for item in vals:
+                    if item in str(cell.value):
+                        self.ws[f'{tcol.upper()}{row}'] = item
+                        self.ws[
+                            f'{scol.upper()}{row}'] = cell.value.replace(
+                            item, '')
+                        break
 
         return self
 
@@ -402,15 +358,10 @@ class Xlsx:
             str: Value from corresponding cell in the same row as search
                 value. Returns False if value search value is not found.
         """
-        try:
-            for row, cell in enumerate(self.ws[srchcol.upper()], 1):
-                if row >= startrow and cell.value:
-                    if srchval in str(cell.value):
-                        return self.ws[f'{retcol.upper()}{row}'].value
-
-        except Exception as e:
-            print(f"\nError - get_matching_value: {e}")
-            input("[ENTER] to continue...")
+        for row, cell in enumerate(self.ws[srchcol.upper()], 1):
+            if row >= startrow and cell.value:
+                if srchval in str(cell.value):
+                    return self.ws[f'{retcol.upper()}{row}'].value
 
         return False
 
@@ -472,23 +423,18 @@ class Xlsx:
         """
         if not stoprow:
             stoprow = self.ws.max_row
-        try:
-            if not skip:
-                skip = []
-            if COLORS.get(fillcolor.lower()):
-                for row, cell in enumerate(self.ws[col.upper()], 1):
-                    if startrow <= row <= stoprow:
-                        if cell.value and str(cell.value).lower() not in skip:
-                            if len(str(cell.value)) != length:
-                                self.ws[
-                                    f'{col.upper()}{row}'].fill = COLORS.get(
-                                    fillcolor.lower())
-            else:
-                print(f" Color '{fillcolor}' not available.")
-
-        except Exception as e:
-            print(f"\nError - verify_length: {e}")
-            input("[ENTER] to continue...")
+        if not skip:
+            skip = []
+        if COLORS.get(fillcolor.lower()):
+            for row, cell in enumerate(self.ws[col.upper()], 1):
+                if startrow <= row <= stoprow:
+                    if cell.value and str(cell.value).lower() not in skip:
+                        if len(str(cell.value)) != length:
+                            self.ws[
+                                f'{col.upper()}{row}'].fill = COLORS.get(
+                                fillcolor.lower())
+        else:
+            print(f" Color '{fillcolor}' not available.")
 
         return self
 
@@ -510,20 +456,15 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            if COLORS.get(fillcolor.lower()):
-                for row, cell in enumerate(self.ws[col.upper()], 1):
-                    if row >= startrow:
-                        if cell.value and srch.lower() in str(
-                                cell.value).lower():
-                            for each in self.ws[f'{row}:{row}']:
-                                each.fill = COLORS.get(fillcolor.lower())
-            else:
-                print(f" Color '{fillcolor}' not available.")
-
-        except Exception as e:
-            print(f"\nError - highlight_rows: {e}")
-            input("[ENTER] to continue...")
+        if COLORS.get(fillcolor.lower()):
+            for row, cell in enumerate(self.ws[col.upper()], 1):
+                if row >= startrow:
+                    if cell.value and srch.lower() in str(
+                            cell.value).lower():
+                        for each in self.ws[f'{row}:{row}']:
+                            each.fill = COLORS.get(fillcolor.lower())
+        else:
+            print(f" Color '{fillcolor}' not available.")
 
         return self
 
@@ -546,17 +487,12 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            for row, cell in enumerate(self.ws[col.upper()], 1):
-                if cell.value and row >= startrow:
-                    if numtype.lower() == 'i':
-                        self.ws[f'{col.upper()}{row}'] = int(cell.value)
-                    if numtype.lower() == 'f':
-                        self.ws[f'{col.upper()}{row}'] = float(cell.value)
-
-        except Exception as e:
-            print(f"\nError - number_type_fix: {e}")
-            input("[ENTER] to continue...")
+        for row, cell in enumerate(self.ws[col.upper()], 1):
+            if cell.value and row >= startrow:
+                if numtype.lower() == 'i':
+                    self.ws[f'{col.upper()}{row}'] = int(cell.value)
+                if numtype.lower() == 'f':
+                    self.ws[f'{col.upper()}{row}'] = float(cell.value)
 
         return self
 
@@ -572,15 +508,10 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            for row, cell in enumerate(self.ws[col.upper()], 1):
-                if row >= startrow and cell.value:
-                    self.ws[f'{col.upper()}{row}'] = cell.value.strftime(
-                        '%m/%d/%Y')
-
-        except Exception as e:
-            print(f"\nError - format_date: {e}")
-            input("[ENTER] to continue...")
+        for row, cell in enumerate(self.ws[col.upper()], 1):
+            if row >= startrow and cell.value:
+                self.ws[f'{col.upper()}{row}'] = cell.value.strftime(
+                    '%m/%d/%Y')
 
         return self
 
@@ -601,14 +532,10 @@ class Xlsx:
         """
         if not stoprow:
             stoprow = self.ws.max_row
-        try:
-            for row, cell in enumerate(self.ws[col.upper()], 1):
-                if startrow <= row <= stoprow and cell.value:
-                    cell.number_format = '$#,###.00'
 
-        except Exception as e:
-            print(f"\nError - format_currency: {e}")
-            input("[ENTER] to continue...")
+        for row, cell in enumerate(self.ws[col.upper()], 1):
+            if startrow <= row <= stoprow and cell.value:
+                cell.number_format = '$#,###.00'
 
         return self
 
@@ -627,20 +554,15 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            for target, size in pairs.items():
-                if type(target) == str:
-                    self.ws.column_dimensions[target.upper()].width = size
-                elif type(target) == int:
-                    self.ws.row_dimensions[target].height = size
-                else:
-                    print(
-                        f"Invalid data pair. Check your info. {target: size}")
-                    input("[ENTER] to continue...")
-
-        except Exception as e:
-            print(f"\nError - set_cell_size: {e}")
-            input("[ENTER] to continue...")
+        for target, size in pairs.items():
+            if type(target) == str:
+                self.ws.column_dimensions[target.upper()].width = size
+            elif type(target) == int:
+                self.ws.row_dimensions[target].height = size
+            else:
+                print(
+                    f"Invalid data pair. Check your info. {target: size}")
+                input("[ENTER] to continue...")
 
         return self
 
@@ -725,13 +647,9 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        try:
-            for row in self.ws.iter_rows():
-                for cell in row:
-                    cell.font = Font(name=fontname, size=str(size))
-
-        except Exception as e:
-            input(f"\n Error - set_sheet_font_style :{e}")
+        for row in self.ws.iter_rows():
+            for cell in row:
+                cell.font = Font(name=fontname, size=str(size))
 
         return self
 
@@ -750,20 +668,16 @@ class Xlsx:
         Returns:
             self: Xlsx object
         """
-        try:
-            for row_num, row_data in enumerate(self.ws.iter_rows(), 1):
-                if row_num < startrow:
-                    continue
-                if stoprow and row_num == stoprow:
-                    break
-                for cell in row_data:
-                    cell.border = Border(left=Side(style='thin'),
-                                         right=Side(style='thin'),
-                                         top=Side(style='thin'),
-                                         bottom=Side(style='thin'))
-
-        except Exception as e:
-            input(f"\n Error - add_cell_borders :{e}")
+        for row_num, row_data in enumerate(self.ws.iter_rows(), 1):
+            if row_num < startrow:
+                continue
+            if stoprow and row_num == stoprow:
+                break
+            for cell in row_data:
+                cell.border = Border(left=Side(style='thin'),
+                                     right=Side(style='thin'),
+                                     top=Side(style='thin'),
+                                     bottom=Side(style='thin'))
 
         return self
 
@@ -800,19 +714,15 @@ class Xlsx:
         data = {}
         keycolumn = keycol if keycol else 'A'
         datastart = hdrrow + 1 if not datastartrow else datastartrow
-        try:
-            for row, cell in enumerate(self.ws[keycolumn.upper()], 1):
-                keys = cell.value if keycol else f"{row:0>4}"
-                if row >= datastart and keys:
-                    data[keys] = {
-                        self.ws[f'{ea.upper()}{hdrrow}'].value: self.ws[
-                            f'{ea.upper()}{row}'].value for ea in datacols}
 
-            return data
+        for row, cell in enumerate(self.ws[keycolumn.upper()], 1):
+            keys = cell.value if keycol else f"{row:0>4}"
+            if row >= datastart and keys:
+                data[keys] = {
+                    self.ws[f'{ea.upper()}{hdrrow}'].value: self.ws[
+                        f'{ea.upper()}{row}'].value for ea in datacols}
 
-        except Exception as e:
-            print(f"\nError - generate_dictionary: {e}")
-            input("[ENTER] to continue...")
+        return data
 
     def generate_list(self, startrow: int = 1, stoprow: int = None) -> list:
         """
