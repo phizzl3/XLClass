@@ -315,6 +315,32 @@ class Xlsx:
 
         return self
 
+    def reverse_text(self, datacol: str = "A", 
+        startrow: int = 1, separator: str = ",") -> object:
+        """
+        Get values from specified column, split them on specified separator,
+        reverse the value's order and write them back to the cell minus the
+        separator. ex: Last, First -> First Last
+
+
+        Args:
+            datacol (str, optional): Excel column with values. 
+            Defaults to "A".
+            startrow (int, optional): Excel row where values begin. 
+            Defaults to 1.
+            separator (str, optional): Text separator to split on. 
+            Defaults to ",".
+        """
+        for row, cell in enumerate(self.ws[datacol], 1):
+            if row < startrow or not cell.value or separator not in cell.value:
+                continue
+            
+            # Swap info and write back to cell
+            split_value = str(cell.value).split(separator)
+            self.ws[f"{datacol}{row}"] = f"{split_value[1]} {split_value[0]}"
+
+        return self
+
 # NOTE: RETURN SHEET DATA
 
     def get_matching_value(self, srchcol: str, srchval: str,
