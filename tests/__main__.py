@@ -288,7 +288,7 @@ class TestXlsx(unittest.TestCase):
         self.xl.set_sheet_font_style(fontname='Courier New', size=100)
         self.xl.set_sheet_font_style(fontname='Courier New')
         self.xl.set_sheet_font_style(size=100)
-        
+
     def test_add_cell_borders(self):
         """
         Tests add_cell_borders just to make sure it runs with no errors.
@@ -297,7 +297,19 @@ class TestXlsx(unittest.TestCase):
         self.xl.add_cell_borders(startrow=2, stoprow=8)
         self.xl.add_cell_borders(startrow=2)
         self.xl.add_cell_borders(stoprow=8)
-        
+
+    def test_reverse_text(self):
+        """
+        Tests to make sure one cell is formatted correctly and a couple 
+        others are skipped as expected.
+        """
+        self.xl.reverse_text()
+        self.xl.reverse_text(datacol="b", startrow=10, separator=',')
+        self.assertEqual(self.xl.ws["B11"].value, "Square Circle")
+        self.assertEqual(self.xl.ws["B18"].value, "Wii U")
+        self.assertEqual(self.xl.ws["B14"].value, "SNES")
+        self.assertEqual(self.xl.ws["A14"].value, "M")
+
 
 if __name__ == '__main__':
     unittest.main()
