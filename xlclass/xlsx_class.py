@@ -315,8 +315,8 @@ class Xlsx:
 
         return self
 
-    def reverse_text(self, datacol: str = "A", 
-        startrow: int = 1, separator: str = ",") -> object:
+    def reverse_text(self, datacol: str = "A",
+                     startrow: int = 1, separator: str = ",") -> object:
         """
         Get values from specified column, split them on specified separator,
         reverse the value's order and write them back to the cell minus the
@@ -331,13 +331,16 @@ class Xlsx:
             separator (str, optional): Text separator to split on. 
             Defaults to ",".
         """
-        for row, cell in enumerate(self.ws[datacol], 1):
+        for row, cell in enumerate(self.ws[datacol.upper()], 1):
             if row < startrow or not cell.value or separator not in cell.value:
                 continue
-            
+
             # Swap info and write back to cell
             split_value = str(cell.value).split(separator)
-            self.ws[f"{datacol}{row}"] = f"{split_value[1]} {split_value[0]}"
+
+            self.ws[
+                f"{datacol.upper()}{row}"
+            ] = f"{split_value[1].strip()} {split_value[0].strip()}"
 
         return self
 
