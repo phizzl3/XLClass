@@ -16,8 +16,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 
 
 def convert_xls(obj, filepath=None, sheetname=None):
-    """
-    Converts .xls data to Xlsx object.
+    """Converts .xls data to Xlsx object.
     """
     if not pd:
         input(".xls support requirements missing. Check requirements.txt")

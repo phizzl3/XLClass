@@ -28,14 +28,12 @@ test_xls = tests_path / "_test.xls"
 class TestXlsx(unittest.TestCase):
 
     def setUp(self):
-        """
-        Generate test Xlsx object for each test. 
+        """Generate test Xlsx object for each test. 
         """
         self.xl = Xlsx(test_xlsx)
 
     def test_init(self):
-        """
-        Test attributes created on __init__() are generated as expected.
+        """Test attributes created on __init__() are generated as expected.
         Checks .path ends in correct filename. Checks .wb and .ws are 
         instances of the correct openpyxl objects.
         """
@@ -45,8 +43,7 @@ class TestXlsx(unittest.TestCase):
             self.xl.ws, openpyxl.worksheet.worksheet.Worksheet)
 
     def test_xls_conversion(self):
-        """
-        Test xls -> xlsx conversion during __init__() and verify cell 
+        """Test xls -> xlsx conversion during __init__() and verify cell 
         data returns as expected.
         """
         self.xl = Xlsx(test_xls, 'Sheet1')
@@ -57,8 +54,7 @@ class TestXlsx(unittest.TestCase):
         self.iterate_integers()
 
     def test_copy_sheet_data(self):
-        """
-        Create a temporary blank workbook, copy selected data to the 
+        """Create a temporary blank workbook, copy selected data to the 
         workbook, and test cell data returns as expected.
         """
         self.xl_temp = Xlsx()
@@ -68,8 +64,7 @@ class TestXlsx(unittest.TestCase):
         self.iterate_integers()
 
     def test_copy_csv_data(self):
-        """
-        Delete all data from main test workbook, open test csv file and
+        """Delete all data from main test workbook, open test csv file and
         copy all data to main workbook, and test cell data returns as 
         expected.
         """
@@ -81,8 +76,7 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws['B11'].value, '7')
 
     def test_sort_and_replace(self):
-        """
-        Test sort and replace using data in column B as sorting keys, 
+        """Test sort and replace using data in column B as sorting keys, 
         and test cell data returns as expected.
         """
         self.xl.sort_and_replace('B', startrow=2)
@@ -92,8 +86,7 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws['C20'].value, 500)
 
     def test_name_headers(self):
-        """
-        Test name headers, and test cell data returns as expected.
+        """Test name headers, and test cell data returns as expected.
         """
         self.xl.name_headers({'A': 'TestA', 'D': 'TestD'}, bold=True)
         self.assertEqual(self.xl.ws['A1'].value, 'TestA')
@@ -103,24 +96,21 @@ class TestXlsx(unittest.TestCase):
         self.iterate_integers()
 
     def test_get_matching_value(self):
-        """
-        Test that the value returned from get_matching_value method is
+        """Test that the value returned from get_matching_value method is
         as expected.
         """
         self.assertEqual(self.xl.get_matching_value('a', 'M', 'B'), 'SNES')
         self.assertEqual(self.xl.get_matching_value('B', 'DS', 'E'), 433.0498)
 
     def test_set_matching_value(self):
-        """
-        Uses the set_matching_value method and then checks that the 
+        """Uses the set_matching_value method and then checks that the 
         data from the cell returns as expected.
         """
         self.xl.set_matching_value('a', 'O', 'E', 'TEST', startrow=4)
         self.assertEqual(self.xl.ws['E16'].value, 'TEST')
 
     def test_find_remove_row(self):
-        """
-        Remove a row based on value 'Switch', and check that a matching
+        """Remove a row based on value 'Switch', and check that a matching
         value from another cell in the same row is not there and that a
         value from the following row is now there in it's place.
         """
@@ -129,16 +119,14 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws['E19'].value, 433.0498)
 
     def test_find_replace(self):
-        """
-        Find and replace the value 'NES' with 'TEST', and then verify
+        """Find and replace the value 'NES' with 'TEST', and then verify
         the cell data returns the new value as expected.
         """
         self.xl.find_replace('B', {'NES': 'TEST'}, ('AB', 'CD'), startrow=2)
         self.assertEqual(self.xl.ws['B13'].value, 'TEST')
 
     def test_move_values(self):
-        """
-        Test move_values on pair of columns using a tuple of strings to
+        """Test move_values on pair of columns using a tuple of strings to
         look for, then verifies the cell data returns from the target
         column as expected.
         """
@@ -146,8 +134,7 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws['C15'].value, 'Gameboy')
 
     def test_verify_length(self):
-        """
-        Test that verify_length runs on an entire column of string
+        """Test that verify_length runs on an entire column of string
         values. Currently no assert methods.
         """
         self.xl.verify_length('B', 4, 'red', startrow=2)
@@ -155,8 +142,7 @@ class TestXlsx(unittest.TestCase):
                               'green', skip=['test1', 'test2'], stoprow=8)
 
     def test_find_and_highlight_rows(self):
-        """
-        Test that find_and_highlight_rows runs on a specified column. 
+        """Test that find_and_highlight_rows runs on a specified column. 
         Currently no assert methods.
         """
         self.xl.find_and_highlight_rows('B', 'Cyan', 'yellow', startrow=2)
@@ -165,16 +151,14 @@ class TestXlsx(unittest.TestCase):
         self.xl.find_and_highlight_rows('d', '05/12/20', 'orange', startrow=2)
 
     def test_number_type_fix(self):
-        """
-        Test that number_type_fix runs on all rows of the specified 
+        """Test that number_type_fix runs on all rows of the specified 
         column. Currently no assert methods. 
         """
         self.xl.number_type_fix('C', 'i', startrow=2)
         self.iterate_integers()
 
     def test_format_date(self):
-        """
-        Checks value in specified cell is of type:datetime.datetime, 
+        """Checks value in specified cell is of type:datetime.datetime, 
         runs format_date on a column of data, verifies cell data value 
         returns new value as expected, then checks final value to verify
         it is of type:str.
@@ -185,8 +169,7 @@ class TestXlsx(unittest.TestCase):
         self.assertIsInstance(self.xl.ws['D7'].value, str)
 
     def test_format_currency(self):
-        """
-        Test format_currency runs on an entire column, and then verify 
+        """Test format_currency runs on an entire column, and then verify 
         cell value data is of type:float.
         """
         self.xl.format_currency('E', startrow=2, stoprow=19)
@@ -194,15 +177,13 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws['E19'].value, 29.50)
 
     def test_set_cell_size(self):
-        """
-        Test set_cell_size runs on a column width as well as a row
+        """Test set_cell_size runs on a column width as well as a row
         height. Currently no assert methods.
         """
         self.xl.set_cell_size({'A': 48, 2: 20})
 
     def test_save(self):
-        """
-        Test save method. Verify "outfile.xlsx" does not exist, save a
+        """Test save method. Verify "outfile.xlsx" does not exist, save a
         copy of output file using method to be tested, verify the file 
         now does exist, then remove the file again.
         """
@@ -213,8 +194,7 @@ class TestXlsx(unittest.TestCase):
         self.assertFalse(Path(f'{tests_path / "outfile.xlsx"}').exists())
 
     def test_generate_dictionary(self):
-        """
-        Test generate_dictionary on main file, then verify that 
+        """Test generate_dictionary on main file, then verify that 
         dictionary values match expected data from original file.
         """
         _dict = self.xl.generate_dictionary(
@@ -224,8 +204,7 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(_dict['DS']['Strings'], 'DS')
 
     def test_generate_list(self):
-        """
-        Test generate_list on main file, then verify that list values
+        """Test generate_list on main file, then verify that list values
         match expected data from original file. Also verify that trying
         to access a list index not included after stop row raises an 
         IndexError.
@@ -237,8 +216,7 @@ class TestXlsx(unittest.TestCase):
             _list[11][0]
 
     def iterate_integers(self, i=100):
-        """
-        Iterate through Integers row and check for equality. For use in 
+        """Iterate through Integers row and check for equality. For use in 
         other test methods.
         """
         for row, cell in enumerate(self.xl.ws['C'], 1):
@@ -247,8 +225,7 @@ class TestXlsx(unittest.TestCase):
                 i += 100
 
     def test_search_matching_value(self):
-        """
-        Tests search_matching_value to verify that the return values
+        """Tests search_matching_value to verify that the return values
         are as expected.
         """
         check_1 = self.xl.search_matching_value('Strings', 'L')
@@ -259,8 +236,7 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(check_3, '20.5')
 
     def test_set_bold_rows(self):
-        """
-        Tests set_bold_rows with and without arguments just to make sure
+        """Tests set_bold_rows with and without arguments just to make sure
         it runs without errors.
         """
         self.xl.set_bold_rows()
@@ -269,8 +245,7 @@ class TestXlsx(unittest.TestCase):
         self.xl.set_bold_rows(stoprow=18)
 
     def test_highlight_rows(self):
-        """
-        Tests highlight_rows with and without arguments to make sure it runs
+        """Tests highlight_rows with and without arguments to make sure it runs
         with no errors.
         """
         self.xl.highlight_rows()
@@ -281,23 +256,32 @@ class TestXlsx(unittest.TestCase):
         self.xl.highlight_rows(fillcolor='BREAK!')
 
     def test_set_sheet_font_style(self):
-        """
-        Tests set_sheet_font_styles just to make sure it runs with no errors.
+        """Tests set_sheet_font_styles just to make sure it runs with no errors.
         """
         self.xl.set_sheet_font_style()
         self.xl.set_sheet_font_style(fontname='Courier New', size=100)
         self.xl.set_sheet_font_style(fontname='Courier New')
         self.xl.set_sheet_font_style(size=100)
-        
+
     def test_add_cell_borders(self):
-        """
-        Tests add_cell_borders just to make sure it runs with no errors.
+        """Tests add_cell_borders just to make sure it runs with no errors.
         """
         self.xl.add_cell_borders()
         self.xl.add_cell_borders(startrow=2, stoprow=8)
         self.xl.add_cell_borders(startrow=2)
         self.xl.add_cell_borders(stoprow=8)
-        
+
+    def test_reverse_text(self):
+        """Tests to make sure one cell is formatted correctly and a couple 
+        others are skipped as expected.
+        """
+        self.xl.reverse_text()
+        self.xl.reverse_text(datacol="b", startrow=10, separator=',')
+        self.assertEqual(self.xl.ws["B11"].value, "Square Circle")
+        self.assertEqual(self.xl.ws["B18"].value, "Wii U")
+        self.assertEqual(self.xl.ws["B14"].value, "SNES")
+        self.assertEqual(self.xl.ws["A14"].value, "M")
+
 
 if __name__ == '__main__':
     unittest.main()
