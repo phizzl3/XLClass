@@ -318,6 +318,9 @@ class Xlsx:
             Defaults to 1.
             separator (str, optional): Text separator to split on. 
             Defaults to ",".
+            
+        Returns:
+            self: Xlsx object
         """
         for row, cell in enumerate(self.ws[datacol.upper()], 1):
             if row < startrow or not cell.value or separator not in cell.value:
@@ -332,26 +335,33 @@ class Xlsx:
 
         return self
 
-    def remove_non_numbers(self, datacol: str,
-                           startrow: int, stoprow: int = None) -> object:
+    def remove_non_numbers(self, 
+                           datacol: str, startrow: int = 1, 
+                           stoprow: int = None, skip: list = []) -> object:
         """Get values from a specified column that should contain only
         numbers. Remove any characters that are non-numbers and write
-        the new values back to the cells (as a string value).
+        the new values back to the cells (as a string value). If a list is
+        passed to skip, check this list first before processing and skip
+        the cell if it matches an entry in the list.
 
         Args:
             datacol (str): Excel column with values to clean.
             startrow (int): Excel row where values begin.
             stoprow (int, optional): Excel row to stop cleaning values.
             Defaults to None.
+            skip (list, optional): List of string values to skip if 
+            found in the specified cells. Defaults to an empty list.
 
         Returns:
-            object: [description]
+            self: Xlsx object
         """
         for row, cell in enumerate(self.ws[f"{datacol.upper()}"], 1):
-            if row < startrow or not cell.value:
-                continue
             if stoprow and row == stoprow:
                 break
+            if row < startrow or not cell.value:
+                continue
+            if str(cell.value).lower() in skip:
+                continue
             # Read and clean the data leaving only numbers
             for char in str(cell.value):
                 if char.isnumeric():
