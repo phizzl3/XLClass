@@ -332,6 +332,36 @@ class Xlsx:
 
         return self
 
+    def remove_non_numbers(self, datacol: str,
+                           startrow: int, stoprow: int = None) -> object:
+        """Get values from a specified column that should contain only
+        numbers. Remove any characters that are non-numbers and write
+        the new values back to the cells (as a string value).
+
+        Args:
+            datacol (str): Excel column with values to clean.
+            startrow (int): Excel row where values begin.
+            stoprow (int, optional): Excel row to stop cleaning values.
+            Defaults to None.
+
+        Returns:
+            object: [description]
+        """
+        for row, cell in enumerate(self.ws[f"{datacol.upper()}"], 1):
+            if row < startrow or not cell.value:
+                continue
+            if stoprow and row == stoprow:
+                break
+            # Read and clean the data leaving only numbers
+            for char in str(cell.value):
+                if char.isnumeric():
+                    continue
+                new_value = str(cell.value).replace(char, "")
+            # Replace cell value with new version
+            self.ws[f"{datacol.upper()}{row}"] = new_value
+
+        return self
+
 # NOTE: RETURN SHEET DATA
 
     def get_matching_value(self, srchcol: str, srchval: str,
