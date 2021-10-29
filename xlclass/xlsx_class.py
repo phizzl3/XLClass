@@ -363,6 +363,7 @@ class Xlsx:
             if str(cell.value).lower() in skip:
                 continue
             # Read and clean the data leaving only numbers
+            new_value = cell.value
             for char in str(cell.value):
                 if char.isnumeric():
                     continue
