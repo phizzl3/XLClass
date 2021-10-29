@@ -282,6 +282,17 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws["B14"].value, "SNES")
         self.assertEqual(self.xl.ws["A14"].value, "M")
 
+    def test_remove_non_numbers(self):
+        """Tests remove_non_numbers to make sure that the returned values
+        don't contain other character types and that the stoprow isn't
+        affected or changed."""
+        self.xl.remove_non_numbers(datacol="e", startrow=3,
+                                   stoprow=18, skip=["15.49", ])
+        self.assertEqual(self.xl.ws["E4"].value, "145")
+        self.assertEqual(self.xl.ws["E16"].value, "265")
+        self.assertEqual(self.xl.ws["E18"].value, 28.5)
+        self.assertEqual(self.xl.ws["E5"].value, 15.49)
+
 
 if __name__ == '__main__':
     unittest.main()
