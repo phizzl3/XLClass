@@ -6,6 +6,9 @@ Requirements:
 * xlrd==2.0.1
 
 """
+
+from pathlib import Path
+
 try:
     import pandas as pd
 except ImportError:
@@ -30,7 +33,7 @@ def convert_xls(obj, filepath=None, sheetname=None):
 
     # Read data from xls and create xlsx object
     df = pd.read_excel(filepath, sheet_name=sheetname)
-    obj.path = filepath
+    obj.path = Path(filepath)
     obj.wb = openpyxl.Workbook()
     obj.ws = obj.wb.active
     obj.ws.title = sheetname
