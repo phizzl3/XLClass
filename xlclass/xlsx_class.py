@@ -1,11 +1,14 @@
 import csv
 import datetime
 import operator
+from pathlib import Path
 
 import openpyxl
 from openpyxl.styles import Border, Font, Side
 
 from .globals import COLORS
+from .utils import (generate_columns_dictionary,
+                    generate_source_target_columns_dictionary)
 from .xls_support import convert_xls
 
 
@@ -29,16 +32,17 @@ class Xlsx:
         containing that data. 
 
         Attrs:
-            *.path (str/pathlib.Path, optional): Filepath information.
+            *.path (pathlib.Path, optional): Filepath information.
+            Defults to None if new blank object is created.
             *.wb (openpyxl.Workbook): Workbook object for Excel file.
             *.ws (openpyxl.Workbook.worksheet): Active sheet for 
-                Excel file.
+            Excel file.
 
         Args:
             filepath (str/pathlib.Path, optional): str/Path object 
-                representing *.xlsx input file.
+            representing *.xlsx input file.
             sheetname (str, optional): Name representing which sheet you
-                want to work with. ex: 'Invoice'
+            want to work with. ex: 'Invoice'
         """
         if filepath:
             # Convert xls to xlsx data using Pandas/Xlrd
@@ -46,7 +50,7 @@ class Xlsx:
                 convert_xls(self, filepath, sheetname)
 
             elif str(filepath).endswith(".xlsx"):
-                self.path = filepath
+                self.path = Path(filepath)
                 self.wb = openpyxl.load_workbook(filepath)
 
                 # Set first sheet as active if only one is present
@@ -106,15 +110,44 @@ class Xlsx:
             input("\n No savepath found...")
 
 
-# NOTE: MANIPULATE SHEET DATA
+# NOTE: ATTRIBUTE GENERATION
 
-    def copy_sheet_data(self, other: object, columns: dict) -> object:
-        """Copy cell values from source Excel Worksheet to target Excel 
-        Worksheet using a passed dictionary of column letters.
+
+    def generate_headers_attribute(self, header_row: int = 1) -> object:
+        """Uses specified header row number to generate a *.headers 
+        attribute containing a dictionary of header values and their 
+        corresonding column letters. {"Header 1": "A", "Header 2": "B"}
 
         Args:
-            other (Xlsx): Input Xlsx Excel file object to copy 
-                values from.
+            header_row (int, optional): Row containing header values. 
+            Defaults to 1.
+
+        Returns:
+            self: Xlsx object (that includes *.headers attribute)
+        """
+        # Skip to specified header row, stop at next row
+        for row, row_data in enumerate(self.ws.iter_rows(), 1):
+            if row < header_row:
+                continue
+            if row == header_row + 1:
+                break
+            # Generate a list of header values
+            header_values = [cell.value for cell in row_data]
+        # Generate the dictionary and add to *.headers attribute
+        self.headers = generate_columns_dictionary(key_list=header_values)
+
+        return self
+
+
+# NOTE: MANIPULATE SHEET DATA
+
+
+    def copy_sheet_data(self, source: object, columns: dict) -> object:
+        """Copy cell values from source Excel Worksheet to target (self)
+        Excel Worksheet using a passed dictionary of column letters.
+
+        Args:
+            source (Xlsx): Input Xlsx Excel file object to copy values from.
             columns (dict{str: str}): Dictionary of column letters 
                 representing the source and target column letters to 
                 copy the values. ex: {'A': 'C', 'D': 'B'}
@@ -122,23 +155,48 @@ class Xlsx:
         Returns:
             self: Xlsx object.
         """
-        for row, _cell in enumerate(other.ws['A'], 1):
+        for row, _cell in enumerate(source.ws['A'], 1):
             for scol, tcol in columns.items():
-                self.ws[f'{tcol.upper()}{row}'] = other.ws[
+                self.ws[f'{tcol.upper()}{row}'] = source.ws[
                     f'{scol.upper()}{row}'].value
 
         return self
 
-    def copy_csv_data(self, incsv: str) -> object:
-        """Copy all values from csv file to target Excel Worksheet.
+    def copy_sheet_data_by_headers(self, source: object, source_dict: dict,
+                                   keep_list: list) -> object:
+        """Copy cell values from source Excel Worksheet to target (self)
+        Excel worksheet using a passed dictionary of {header: column} 
+        matching the source worksheet, and a list of headers corresponding
+        to the columns that need to be copied. 
 
         Args:
-            incsv (str/pathlib.Path): Path object representing a csv file.
+            source (Xlsx): Input Xlsx Excel file object to copy values from.
+            source_dict (dict): Dictionary of header values and corresponding
+            columns matching the source Excel file object.
+            keep_list (list): Ordered list of strings matching the header
+            values that you want to keep/copy into the target file object.
 
         Returns:
             self: Xlsx object.
         """
-        with open(incsv, 'r') as f:
+        # Generate {source: target} columns dictionary
+        source_target = generate_source_target_columns_dictionary(
+            source_dict=source_dict, keep_list=keep_list)
+        # Copy sheet data using columns generated above
+        self.copy_sheet_data(source=source, columns=source_target)
+
+        return self
+
+    def copy_csv_data(self, source_csv: str) -> object:
+        """Copy all values from source csv file to target Excel Worksheet.
+
+        Args:
+            source_csv (str/pathlib.Path): Path object representing a csv file.
+
+        Returns:
+            self: Xlsx object.
+        """
+        with open(source_csv, 'r') as f:
             reader = csv.reader(f)
             [self.ws.append(row) for row in reader]
 
@@ -219,7 +277,8 @@ class Xlsx:
 
         return self
 
-    def find_remove_row(self, col: str, srch: str, startrow: int = 1) -> object:
+    def find_remove_row(self, col: str, 
+                        srch: str, startrow: int = 1) -> object:
         """Remove row based on a specific value found in a column.
 
         Args:
@@ -318,7 +377,7 @@ class Xlsx:
             Defaults to 1.
             separator (str, optional): Text separator to split on. 
             Defaults to ",".
-            
+
         Returns:
             self: Xlsx object
         """
@@ -335,8 +394,8 @@ class Xlsx:
 
         return self
 
-    def remove_non_numbers(self, 
-                           datacol: str, startrow: int = 1, 
+    def remove_non_numbers(self,
+                           datacol: str, startrow: int = 1,
                            stoprow: int = None, skip: list = []) -> object:
         """Get values from a specified column that should contain only
         numbers. Remove any characters that are non-numbers and write
