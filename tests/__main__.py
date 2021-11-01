@@ -18,6 +18,8 @@ from pathlib import Path
 
 import openpyxl
 from xlclass import Xlsx
+from xlclass.utils import (generate_columns_dictionary,
+                           generate_source_target_columns_dictionary)
 
 tests_path = Path(__file__).resolve().parent
 test_xlsx = tests_path / "_test.xlsx"
@@ -292,6 +294,47 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(self.xl.ws["E16"].value, "265")
         self.assertEqual(self.xl.ws["E18"].value, 28.5)
         self.assertEqual(self.xl.ws["E5"].value, 15.49)
+
+    def test_generate_columns_dictionary(self):
+        """Tests generate columns dictionary to verify key/value pairs."""
+        headers_list = ("header 1", "header 2", "header 3")
+        headers_dict = generate_columns_dictionary(headers_list)
+        self.assertEqual(headers_dict["header 1"], "A")
+        self.assertEqual(headers_dict["header 2"], "B")
+        self.assertEqual(headers_dict["header 3"], "C")
+
+    def test_generate_source_target_columns_dictionary(self):
+        """Tests generate source target columns dictionary to verify 
+        key/value pairs
+        """
+        header_dict = {"header 1": "C", "header 2": "J", "header 3": "Z"}
+        keepers = ("header 3", "header 1")
+        output_dict = generate_source_target_columns_dictionary(
+            header_dict, keepers)
+        self.assertEqual(output_dict["Z"], "A")
+        self.assertEqual(output_dict["C"], "B")
+
+    def test_generate_headers_attribute(self):
+        """Tests generate headers attribute to verify attribute is
+        present and to verify key/value pairs.
+        """
+        self.xl.generate_headers_attribute()
+        self.assertEqual(self.xl.headers["Letters"], "A")
+        self.assertEqual(self.xl.headers["Integers"], "C")
+        self.assertEqual(self.xl.headers["Currency"], "E")
+
+    def test_copy_sheet_data_by_headers(self):
+        """Tests copy sheet data by headers by copying column data
+        to a temp object and verifying cell values. 
+        """
+        self.xl_temp = Xlsx()
+        self.xl.generate_headers_attribute()
+        keepers = ("Strings", "Letters")
+        self.xl_temp.copy_sheet_data_by_headers(
+            self.xl, self.xl.headers, keepers)
+        self.assertEqual(self.xl_temp.ws["A4"].value, "Purple")
+        self.assertEqual(self.xl_temp.ws["B4"].value, "C")
+        self.assertEqual(self.xl_temp.ws["A13"].value, "NES")
 
 
 if __name__ == '__main__':
