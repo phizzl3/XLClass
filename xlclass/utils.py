@@ -1,9 +1,41 @@
-"""
-Utility functions for use with XlClass mudule.
-"""
+from pathlib import Path
 
+try:
+    import pandas as pd
+except ImportError:
+    pd = False
 
+import openpyxl
 from openpyxl.utils import get_column_letter
+from openpyxl.utils.dataframe import dataframe_to_rows
+
+
+def _convert_xls(obj, filepath=None, sheetname=None):
+    """Converts .xls data to Xlsx object."""
+    if not pd:
+        input(".xls support requirements missing. Check requirements.txt")
+        exit("Exiting...")
+
+    # Convert xls to xlsx data using Pandas/Xlrd
+    if not filepath and sheetname:
+        input("Error converting from xls.\nBe sure to include the sheetname "
+              "when passing your filepath.")
+        exit("Exiting...")
+
+    # Read data from xls and create xlsx object
+    df = pd.read_excel(filepath, sheet_name=sheetname)
+    obj.path = Path(filepath)
+    obj.wb = openpyxl.Workbook()
+    obj.ws = obj.wb.active
+    obj.ws.title = sheetname
+
+    # Copy row data from xls to new xlsx object
+    for row in dataframe_to_rows(df):
+        obj.ws.append(row)
+
+    # Remove index row/colum created by Pandas
+    obj.ws.delete_cols(1, 1)
+    obj.ws.delete_rows(1, 1)
 
 
 def generate_columns_dictionary(key_list: list) -> dict:
@@ -23,8 +55,8 @@ def generate_columns_dictionary(key_list: list) -> dict:
         column_number) for column_number, key_value in enumerate(key_list, 1)}
 
 
-def generate_source_target_columns_dictionary(
-    source_dict: dict, keep_list: list) -> dict:
+def _generate_source_target_columns_dictionary(
+        source_dict: dict, keep_list: list) -> dict:
     """Uses the passed ordered list (keep_list) to generate a new 
     dictionary from matching values using the keys from the passed 
     dictionary (source_dict) to generate a new dictionary with 

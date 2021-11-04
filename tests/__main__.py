@@ -19,7 +19,7 @@ from pathlib import Path
 import openpyxl
 from xlclass import Xlsx
 from xlclass.utils import (generate_columns_dictionary,
-                           generate_source_target_columns_dictionary)
+                           _generate_source_target_columns_dictionary)
 
 tests_path = Path(__file__).resolve().parent
 test_xlsx = tests_path / "_test.xlsx"
@@ -309,7 +309,7 @@ class TestXlsx(unittest.TestCase):
         """
         header_dict = {"header 1": "C", "header 2": "J", "header 3": "Z"}
         keepers = ("header 3", "header 1")
-        output_dict = generate_source_target_columns_dictionary(
+        output_dict = _generate_source_target_columns_dictionary(
             header_dict, keepers)
         self.assertEqual(output_dict["Z"], "A")
         self.assertEqual(output_dict["C"], "B")
