@@ -4,12 +4,17 @@ import operator
 from pathlib import Path
 
 import openpyxl
-from openpyxl.styles import Border, Font, Side
+from openpyxl.styles import Border, Font, PatternFill, Side
 
-from .globals import COLORS
-from .utils import (generate_columns_dictionary,
-                    generate_source_target_columns_dictionary)
-from .xls_support import convert_xls
+from .utils import (_convert_xls, _generate_source_target_columns_dictionary,
+                    generate_columns_dictionary)
+
+# Color dict for background fill
+COLORS = {'red': PatternFill(fgColor='FF0000', fill_type='solid'),
+          'green': PatternFill(fgColor='00b050', fill_type='solid'),
+          'orange': PatternFill(fgColor='FFC000', fill_type='solid'),
+          'yellow': PatternFill(fgColor='FFFF00', fill_type='solid'),
+          'gray': PatternFill(fgColor='C0C0C0', fill_type='solid')}
 
 
 class Xlsx:
@@ -17,8 +22,6 @@ class Xlsx:
     Generates an Xlsx object with Openpyxl Workbook/Worksheet objects
     as attributes for use with the enclosed methods.
     """
-
-# NOTE: FILE INPUT/OUTPUT
 
     def __init__(self, filepath: str = None, sheetname: str = None) -> None:
         """Initialize main attributes for Xlsx objects if Path points to
@@ -47,7 +50,7 @@ class Xlsx:
         if filepath:
             # Convert xls to xlsx data using Pandas/Xlrd
             if str(filepath).endswith(".xls"):
-                convert_xls(self, filepath, sheetname)
+                _convert_xls(self, filepath, sheetname)
 
             elif str(filepath).endswith(".xlsx"):
                 self.path = Path(filepath)
@@ -109,10 +112,6 @@ class Xlsx:
         else:
             input("\n No savepath found...")
 
-
-# NOTE: ATTRIBUTE GENERATION
-
-
     def generate_headers_attribute(self, header_row: int = 1) -> object:
         """Uses specified header row number to generate a *.headers 
         attribute containing a dictionary of header values and their 
@@ -137,10 +136,6 @@ class Xlsx:
         self.headers = generate_columns_dictionary(key_list=header_values)
 
         return self
-
-
-# NOTE: MANIPULATE SHEET DATA
-
 
     def copy_sheet_data(self, source: object, columns: dict) -> object:
         """Copy cell values from source Excel Worksheet to target (self)
@@ -180,7 +175,7 @@ class Xlsx:
             self: Xlsx object.
         """
         # Generate {source: target} columns dictionary
-        source_target = generate_source_target_columns_dictionary(
+        source_target = _generate_source_target_columns_dictionary(
             source_dict=source_dict, keep_list=keep_list)
         # Copy sheet data using columns generated above
         self.copy_sheet_data(source=source, columns=source_target)
@@ -277,7 +272,7 @@ class Xlsx:
 
         return self
 
-    def find_remove_row(self, col: str, 
+    def find_remove_row(self, col: str,
                         srch: str, startrow: int = 1) -> object:
         """Remove row based on a specific value found in a column.
 
@@ -432,8 +427,6 @@ class Xlsx:
 
         return self
 
-# NOTE: RETURN SHEET DATA
-
     def get_matching_value(self, srchcol: str, srchval: str,
                            retcol: str, startrow: int = 1) -> str:
         """Search column for a value and return the corresponding value
@@ -488,8 +481,6 @@ class Xlsx:
 
         # In case search isn't located.
         return False
-
-# NOTE: VALIDATE SHEET DATA
 
     def verify_length(self, col: str, length: int, fillcolor: str,
                       skip: list = None, startrow: int = 1,
@@ -557,8 +548,6 @@ class Xlsx:
             print(f" Color '{fillcolor}' not available.")
 
         return self
-
-# NOTE: FORMAT AND STYLE
 
     def number_type_fix(self, col: str,
                         numtype: str, startrow: int = 1) -> object:
@@ -762,8 +751,6 @@ class Xlsx:
                                      bottom=Side(style='thin'))
 
         return self
-
-# NOTE: ITERABLES GENERATION
 
     def generate_dictionary(self, datacols: list, keycol: str = None,
                             hdrrow: int = 1, datastartrow: int = None) -> dict:
