@@ -469,10 +469,10 @@ class Xlsx:
 
         for row in self.ws.iter_rows():
             for cell_number, cell_data in enumerate(row, 1):
-                if cell_data.value == header_srch_value:
+                if str(cell_data.value) == header_srch_value:
                     search_column += cell_number
 
-                if cell_data.value == row_srch_value:
+                if str(cell_data.value) == row_srch_value:
                     search_row = True
 
                 if search_row:
