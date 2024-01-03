@@ -112,7 +112,7 @@ class Xlsx:
         else:
             input("\n No savepath found...")
 
-    def generate_headers_attribute(self, header_row: int = 1) -> object:
+    def generate_headers_attribute(self, header_row: int = 1):
         """Uses specified header row number to generate a *.headers 
         attribute containing a dictionary of header values and their 
         corresonding column letters. {"Header 1": "A", "Header 2": "B"}
@@ -137,7 +137,7 @@ class Xlsx:
 
         return self
 
-    def copy_sheet_data(self, source: object, columns: dict) -> object:
+    def copy_sheet_data(self, source: object, columns: dict):
         """Copy cell values from source Excel Worksheet to target (self)
         Excel Worksheet using a passed dictionary of column letters.
 
@@ -158,7 +158,7 @@ class Xlsx:
         return self
 
     def copy_sheet_data_by_headers(self, source: object, source_dict: dict,
-                                   keep_list: list) -> object:
+                                   keep_list: list):
         """Copy cell values from source Excel Worksheet to target (self)
         Excel worksheet using a passed dictionary of {header: column} 
         matching the source worksheet, and a list of headers corresponding
@@ -182,7 +182,7 @@ class Xlsx:
 
         return self
 
-    def copy_csv_data(self, source_csv: str) -> object:
+    def copy_csv_data(self, source_csv: str):
         """Copy all values from source csv file to target Excel Worksheet.
 
         Args:
@@ -197,7 +197,7 @@ class Xlsx:
 
         return self
 
-    def sort_and_replace(self, sortcol: str, startrow: int = 1) -> object:
+    def sort_and_replace(self, sortcol: str, startrow: int = 1):
         """Sort and replace cell values based on values of a specific 
         column. Use this BEFORE any cell formatting, etc as it DELETES 
         the values and then replaces them after sorting.
@@ -226,7 +226,7 @@ class Xlsx:
         return self
 
     def name_headers(self, headers: dict,
-                     hdrrow=1, bold: bool = False) -> object:
+                     hdrrow=1, bold: bool = False):
         """Cycle through header row and fill cells with values.
 
         Args:
@@ -249,7 +249,7 @@ class Xlsx:
         return self
 
     def set_matching_value(self, srchcol: str, srchval: str, trgtcol: str,
-                           setval: str, startrow: int = 1) -> object:
+                           setval: str, startrow: int = 1):
         """Search column for a value and set a corresponding value in 
         another column in the same row.
 
@@ -273,7 +273,7 @@ class Xlsx:
         return self
 
     def find_remove_row(self, col: str,
-                        srch: str, startrow: int = 1) -> object:
+                        srch: str, startrow: int = 1):
         """Remove row based on a specific value found in a column.
 
         Args:
@@ -298,7 +298,7 @@ class Xlsx:
         return self
 
     def find_replace(self, col: str, fndrplc: dict,
-                     skip: list = None, startrow: int = 1) -> object:
+                     skip: list = None, startrow: int = 1):
         """Search column for a string value and replace it the value is
         not listed in 'skip'.
 
@@ -329,7 +329,7 @@ class Xlsx:
         return self
 
     def move_values(self, scol: str, tcol: str,
-                    vals: list, startrow: int = 1) -> object:
+                    vals: list, startrow: int = 1):
         """Search source column for passed list of values and 
         move them to target column. 
 
@@ -359,7 +359,7 @@ class Xlsx:
         return self
 
     def reverse_text(self, datacol: str = "A",
-                     startrow: int = 1, separator: str = ",") -> object:
+                     startrow: int = 1, separator: str = ","):
         """Get values from specified column, split them on specified separator,
         reverse the value's order and write them back to the cell minus the
         separator. ex: Last, First -> First Last
@@ -391,7 +391,7 @@ class Xlsx:
 
     def remove_non_numbers(self,
                            datacol: str, startrow: int = 1,
-                           stoprow: int = None, skip: list = []) -> object:
+                           stoprow: int = None, skip: list = []):
         """Get values from a specified column that should contain only
         numbers. Remove any characters that are non-numbers and write
         the new values back to the cells (as a string value). If a list is
@@ -469,10 +469,10 @@ class Xlsx:
 
         for row in self.ws.iter_rows():
             for cell_number, cell_data in enumerate(row, 1):
-                if cell_data.value == header_srch_value:
+                if str(cell_data.value) == header_srch_value:
                     search_column += cell_number
 
-                if cell_data.value == row_srch_value:
+                if str(cell_data.value) == row_srch_value:
                     search_row = True
 
                 if search_row:
@@ -484,7 +484,7 @@ class Xlsx:
 
     def verify_length(self, col: str, length: int, fillcolor: str,
                       skip: list = None, startrow: int = 1,
-                      stoprow: int = None) -> object:
+                      stoprow: int = None):
         """Cycle through values in a column to verify their length marking 
         cells of an incorrect length with a background fill color. 
 
@@ -522,7 +522,7 @@ class Xlsx:
 
     def find_and_highlight_rows(self, col: str, srch: str,
                                 fillcolor: str = 'red',
-                                startrow: int = 1) -> object:
+                                startrow: int = 1):
         """Search row for specified str value and fill entire row 
         with specified background fill color when found. 
 
@@ -550,7 +550,7 @@ class Xlsx:
         return self
 
     def number_type_fix(self, col: str,
-                        numtype: str, startrow: int = 1) -> object:
+                        numtype: str, startrow: int = 1):
         """Quick fix for cells that contain numbers formatted as 
         text/str data. Cycle through cells replacing str formatted 
         values with int/float values.
@@ -574,7 +574,7 @@ class Xlsx:
 
         return self
 
-    def format_date(self, col: str, startrow: int = 1) -> object:
+    def format_date(self, col: str, startrow: int = 1):
         """Format str date value to (MM/DD/YYYY).
 
         Args:
@@ -593,7 +593,7 @@ class Xlsx:
         return self
 
     def format_currency(self, col: str,
-                        startrow: int = 1, stoprow: int = None) -> object:
+                        startrow: int = 1, stoprow: int = None):
         """Format str currency value to ($0,000.00).
 
         Args:
@@ -615,7 +615,7 @@ class Xlsx:
 
         return self
 
-    def set_cell_size(self, pairs: dict) -> object:
+    def set_cell_size(self, pairs: dict):
         """Selects rows and columns and adjusts their sizes using a 
         dictionary of pairs of rows or columns along with corresponding 
         height or width to adjust the size of cells from each pair. If 
@@ -641,7 +641,7 @@ class Xlsx:
 
         return self
 
-    def set_bold_rows(self, startrow: int = 1, stoprow: int = 0) -> object:
+    def set_bold_rows(self, startrow: int = 1, stoprow: int = 0):
         """Sets all cells in specified rows to bold beginning at startrow 
         and ending just before stoprow (if passed). Sets all cells below
         startrow to bold if stoprow isn't passed. *Uses the default font 
@@ -668,7 +668,7 @@ class Xlsx:
 
     def highlight_rows(self, startrow: int = 1,
                        stoprow: int = 0, fillcolor: str = 'gray',
-                       alternate: bool = False) -> object:
+                       alternate: bool = False):
         """Highlights specified rows (optionally alternating) using passed 
         color (from xlclass.COLORS dict) starting at startrow and ending 
         just before stoprow. Highlights all remaining rows if stoprow is
@@ -708,7 +708,7 @@ class Xlsx:
         return self
 
     def set_sheet_font_style(self,
-                             fontname: str = 'Arial', size: int = 8) -> object:
+                             fontname: str = 'Arial', size: int = 8):
         """Sets all cells to specified font name and size.
         *Overrides any other font style settings in selected cells.
 
@@ -725,7 +725,7 @@ class Xlsx:
 
         return self
 
-    def add_cell_borders(self, startrow: int = 1, stoprow: int = 0) -> object:
+    def add_cell_borders(self, startrow: int = 1, stoprow: int = 0):
         """Set thin cell borders around all populated cells beginning at 
         startrow and ending at stoprow. If no stoprow is passed, borders 
         will be added until the end of the populated cells.
