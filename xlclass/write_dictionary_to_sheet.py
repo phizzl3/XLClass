@@ -28,9 +28,9 @@ def _write_dictionary_to_sheet(
     if not start_row or (start_row == header_row):
         start_row = header_row + 1
 
-    # Adds all keys to a single list. (looks at all dictionaries for
-    # keys in case some keys aren't present in every nested dictionary.)
-    # to be used as headers.
+    # Adds all keys to a single list to be used as headers.
+    # (looks at all dictionaries for keys in case some keys
+    # aren't present in every nested dictionary.)
     keys = []
     for row_data in data_dict.values():
         for key in row_data:
