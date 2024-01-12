@@ -13,6 +13,6 @@ xls support Requirements:
 
 from .xlsx_class import Xlsx
 
-__version__ = '11.04.2021'
+__version__ = '0.1.2'
 
 __all__ = ['Xlsx']
