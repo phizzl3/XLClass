@@ -204,6 +204,11 @@ class TestXlsx(unittest.TestCase):
         self.assertEqual(_dict['Cyan']['Currency'], 48398.58)
         self.assertEqual(_dict['Wii U']['Integers'], 1700)
         self.assertEqual(_dict['DS']['Strings'], 'DS')
+        # Test with no arguments - full sheet reader
+        _dict = self.xl.generate_dictionary()
+        self.assertEqual(_dict["0004"]["Letters"], "C")
+        self.assertEqual(_dict["0008"]["Strings"], "Cyan")
+        self.assertEqual(_dict["0016"]["Integers"], 1500)
 
     def test_generate_list(self):
         """Test generate_list on main file, then verify that list values

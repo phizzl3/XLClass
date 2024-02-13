@@ -389,9 +389,9 @@ class Xlsx:
             # Swap info and write back to cell
             split_value = str(cell.value).split(separator)
 
-            self.ws[
-                f"{datacol.upper()}{row}"
-            ] = f"{split_value[1].strip()} {split_value[0].strip()}"
+            self.ws[f"{datacol.upper()}{row}"] = (
+                f"{split_value[1].strip()} {split_value[0].strip()}"
+            )
 
         return self
 
@@ -766,10 +766,10 @@ class Xlsx:
 
     def generate_dictionary(
         self,
-        datacols: list,
-        keycol: str = None,
+        datacols: list = [],
+        keycol: str = "",
         hdrrow: int = 1,
-        datastartrow: int = None,
+        datastartrow: int = 2,
     ) -> dict:
         """Reads the headers and cells from the spreadsheet and uses them
         to generate a dictionary of the data. Data listed in *keycol* on
@@ -780,8 +780,9 @@ class Xlsx:
         ex: '0005'
 
         Args:
-            datacols (list): List of string column letters where needed
-                data is located.
+            datacols (list, optional): List of string column letters where needed
+                data is located eg. ["A", "B", "C"] If none is specified,
+                reads the entire spreadsheet. Defaults to None.
             keycol (str, optional): Column letter where the data that
                 will be used as the dictionary keys is located. If not
                 passed, 4-digit string of the row numbers will be used
@@ -789,26 +790,45 @@ class Xlsx:
             hdrrow (int, optional) Row number containing the headers in
                 the spreadsheet. Defaults to 1.
             datastartrow (int, optional) Row number where the needed
-                data starts. If not specified, data will be read from
-                header row + 1. Defaults to None.
+                data starts. Defaults to 2.
 
         Returns:
-            dict: Dictionary generated from the data in the spreadsheet.
+            dict: Nested dictionary generated from the data in the spreadsheet.
                 {key: {header: value}}
         """
         data = {}
         keycolumn = keycol if keycol else "A"
-        datastart = hdrrow + 1 if not datastartrow else datastartrow
 
-        for row, cell in enumerate(self.ws[keycolumn.upper()], 1):
-            keys = cell.value if keycol else f"{row:0>4}"
-            if row >= datastart and keys:
-                data[keys] = {
-                    self.ws[f"{ea.upper()}{hdrrow}"]
-                    .value: self.ws[f"{ea.upper()}{row}"]
-                    .value
-                    for ea in datacols
-                }
+        # Runs if data columns are specified and only gets the data in those listed
+        if datacols:
+            for row, cell in enumerate(self.ws[keycolumn.upper()], 1):
+                # Use the value in the key column if specified
+                # Otherwise, generates a number based on enumerate/row number
+                keys = cell.value if keycol else f"{row:0>4}"
+                if row >= datastartrow and keys:
+                    data[keys] = {
+                        self.ws[f"{ea.upper()}{hdrrow}"]
+                        .value: self.ws[f"{ea.upper()}{row}"]
+                        .value
+                        for ea in datacols
+                    }
+
+        # Runs if no data columns are specified and gets the entire sheet
+        else:
+            headers_list = []
+            for row, row_data in enumerate(self.ws.iter_rows(), 1):
+                # Use the value in the key column if specified
+                # Otherwise, generates a
+                keys = self.ws[f"{keycol}{row}"].value if keycol else f"{row:0>4}"
+                # Generates a list of values to use as headers (indexed below)
+                if row == hdrrow:
+                    for cell in row_data:
+                        headers_list.append(cell.value)
+                if row >= datastartrow:
+                    data[keys] = {
+                        headers_list[index]: cell.value
+                        for index, cell in enumerate(row_data)
+                    }
 
         return data
 
