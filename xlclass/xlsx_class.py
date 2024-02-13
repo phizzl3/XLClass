@@ -389,9 +389,9 @@ class Xlsx:
             # Swap info and write back to cell
             split_value = str(cell.value).split(separator)
 
-            self.ws[
-                f"{datacol.upper()}{row}"
-            ] = f"{split_value[1].strip()} {split_value[0].strip()}"
+            self.ws[f"{datacol.upper()}{row}"] = (
+                f"{split_value[1].strip()} {split_value[0].strip()}"
+            )
 
         return self
 
@@ -780,8 +780,9 @@ class Xlsx:
         ex: '0005'
 
         Args:
-            datacols (list): List of string column letters where needed
-                data is located.
+            datacols (list, optional): List of string column letters where needed
+                data is located eg. ["A", "B", "C"] If none is specified,
+                reads the entire spreadsheet. Defaults to None.
             keycol (str, optional): Column letter where the data that
                 will be used as the dictionary keys is located. If not
                 passed, 4-digit string of the row numbers will be used
@@ -789,11 +790,10 @@ class Xlsx:
             hdrrow (int, optional) Row number containing the headers in
                 the spreadsheet. Defaults to 1.
             datastartrow (int, optional) Row number where the needed
-                data starts. If not specified, data will be read from
-                header row + 1. Defaults to None.
+                data starts. Defaults to 2.
 
         Returns:
-            dict: Dictionary generated from the data in the spreadsheet.
+            dict: Nested dictionary generated from the data in the spreadsheet.
                 {key: {header: value}}
         """
         data = {}
@@ -807,7 +807,9 @@ class Xlsx:
                 keys = cell.value if keycol else f"{row:0>4}"
                 if row >= datastartrow and keys:
                     data[keys] = {
-                        self.ws[f"{ea.upper()}{hdrrow}"].value: self.ws[f"{ea.upper()}{row}"].value
+                        self.ws[f"{ea.upper()}{hdrrow}"]
+                        .value: self.ws[f"{ea.upper()}{row}"]
+                        .value
                         for ea in datacols
                     }
 
@@ -827,11 +829,6 @@ class Xlsx:
                         headers_list[index]: cell.value
                         for index, cell in enumerate(row_data)
                     }
-
-
-
-
-
 
         return data
 
