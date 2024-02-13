@@ -766,10 +766,10 @@ class Xlsx:
 
     def generate_dictionary(
         self,
-        datacols: list,
-        keycol: str = None,
+        datacols: list = [],
+        keycol: str = "",
         hdrrow: int = 1,
-        datastartrow: int = None,
+        datastartrow: int = 2,
     ) -> dict:
         """Reads the headers and cells from the spreadsheet and uses them
         to generate a dictionary of the data. Data listed in *keycol* on
