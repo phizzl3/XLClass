@@ -798,17 +798,40 @@ class Xlsx:
         """
         data = {}
         keycolumn = keycol if keycol else "A"
-        datastart = hdrrow + 1 if not datastartrow else datastartrow
 
-        for row, cell in enumerate(self.ws[keycolumn.upper()], 1):
-            keys = cell.value if keycol else f"{row:0>4}"
-            if row >= datastart and keys:
-                data[keys] = {
-                    self.ws[f"{ea.upper()}{hdrrow}"]
-                    .value: self.ws[f"{ea.upper()}{row}"]
-                    .value
-                    for ea in datacols
-                }
+        # Runs if data columns are specified and only gets the data in those listed
+        if datacols:
+            for row, cell in enumerate(self.ws[keycolumn.upper()], 1):
+                # Use the value in the key column if specified
+                # Otherwise, generates a number based on enumerate/row number
+                keys = cell.value if keycol else f"{row:0>4}"
+                if row >= datastartrow and keys:
+                    data[keys] = {
+                        self.ws[f"{ea.upper()}{hdrrow}"].value: self.ws[f"{ea.upper()}{row}"].value
+                        for ea in datacols
+                    }
+
+        # Runs if no data columns are specified and gets the entire sheet
+        else:
+            headers_list = []
+            for row, row_data in enumerate(self.ws.iter_rows(), 1):
+                # Use the value in the key column if specified
+                # Otherwise, generates a
+                keys = self.ws[f"{keycol}{row}"].value if keycol else f"{row:0>4}"
+                # Generates a list of values to use as headers (indexed below)
+                if row == hdrrow:
+                    for cell in row_data:
+                        headers_list.append(cell.value)
+                if row >= datastartrow:
+                    data[keys] = {
+                        headers_list[index]: cell.value
+                        for index, cell in enumerate(row_data)
+                    }
+
+
+
+
+
 
         return data
 
